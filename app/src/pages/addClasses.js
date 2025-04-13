@@ -19,10 +19,10 @@ function SignUp() {
         e.preventDefault();
     
         axios.post(`${config.backendUrl}/add_class`, {
-          formData['teacher_id'],
-          formData.subject,
-          formData.semester_id,
-          formData.class_name
+          teacher_id: formData['teacher_id'],
+          subject: formData['subject'],
+          semester_id: formData['semester_id'],
+          class_name: formData['class_name']
         }).then(response => {
           console.log("Successfully added class: " + response.data['message']);
         }).catch( error => {

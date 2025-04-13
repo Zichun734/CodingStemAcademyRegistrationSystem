@@ -7,13 +7,34 @@ import { useRouter } from 'next/router';
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import { zodResolver} from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+import { z } from "zod"
 
+const formSchema = z.object({
+  first_name: z.string().min(1, {
+    message: "First name is required",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address",
+  })
+})
 
 export function DatePickerDemo() {
   const [date, setDate] = useState(0)
@@ -65,6 +86,14 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const gradeLevels = Array.from({length: 12}, (_, i) => i + 1);
 
+  const form = useForm<z.infer<typeof formSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      first_name: "",
+      email: "",
+    },
+  })
+
   function handleSignUp(e) {
     e.preventDefault();
 
@@ -96,7 +125,28 @@ export default function Register() {
   return (
     <div>
       <h1>Register</h1>
-      <form onSubmit={handleSignUp}>
+      <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSignUp)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is your public display name.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
+      {/* <form onSubmit={handleSignUp}>
         <input
           type="text"
           name="first_name"
@@ -218,7 +268,7 @@ export default function Register() {
         </select>
         <br />
         <button type="submit">Register</button>
-      </form>
+      </form> */}
     </div>
   );
 }
