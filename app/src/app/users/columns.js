@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { ArrowUpDown } from "lucide-react"
 
 export const roles = ['Admin', 'Student', 'Teacher'];
 
@@ -20,15 +21,33 @@ export const columns = [
       },
       {
         accessorKey: "last_name",
-        header: "Last Name",
+        header: ({ column }) => {
+          return (
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+              <span>Last Name</span>
+            </Button>
+          )
+        }
       },
       {
         accessorKey: "first_name",
-        header: "First Name",
+        header: ({ column }) => {
+          return (
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+              <span>First Name</span>
+            </Button>
+          )
+        }
       },
       {
         accessorKey: "email",
-        header: "Email",
+        header: ({ column }) => {
+          return (
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+              <span>Email</span>
+            </Button>
+          )
+        }
       },
       {
         accessorKey: "phone",
@@ -50,13 +69,17 @@ export const columns = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View User's classes</DropdownMenuItem>
-                        <DropdownMenuItem>Add User Classes</DropdownMenuItem>
-                        <DropdownMenuItem>Edit User Information</DropdownMenuItem>
-                        <DropdownMenuItem>Change User Role</DropdownMenuItem>
                         {userRole === 'Student' ? (
-                            <DropdownMenuItem>View Payments</DropdownMenuItem>
-                        ) : null}
+                          <div>
+                            <DropdownMenuItem>Manage Student's Classes</DropdownMenuItem>
+                            <DropdownMenuItem>Manage Payments</DropdownMenuItem>
+                          </div>
+                        ) : userRole === 'Teacher' ? (
+                          <div>
+                            <DropdownMenuItem>Manage Teacher's Classes</DropdownMenuItem>
+                          </div>
+                        ): null}
+                        <DropdownMenuItem>Manage Profile</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
