@@ -124,6 +124,7 @@ export default function StudentClasses() {
                 <div>
                     <Label className="flex flex-row">
                         <h1 className="text-3xl font-bold">{student['first_name']} {student['last_name']}'s classes</h1>
+                        <p>Student</p>
                     </Label>
                     <DataTable columns={columns} data={classes} />
                 </div>

@@ -71,8 +71,12 @@ def get_classes_by_teacher():
         val = (id, )
         cursor.execute(sql, val)
         res = cursor.fetchall()
-        res['start_time'] = format_time(res['start_time'])
-        res['end_time'] = format_time(res['end_time'])
+        for classData in res:
+            print(classData)
+            if 'start_time' in classData and isinstance(classData['start_time'], timedelta):
+                classData['start_time'] = format_time(classData['start_time'])
+            if 'end_time' in classData and isinstance(classData['end_time'], timedelta):
+                classData['end_time'] = format_time(classData['end_time'])
     finally:
         db.close()
         cursor.close()

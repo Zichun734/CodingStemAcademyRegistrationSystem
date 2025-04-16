@@ -43,6 +43,19 @@ def get_student_classes():
         my_db.close()
     return jsonify({'message': 'Classes retrieved', 'classes': res})
 
+@class_students_bp.route('/student-count')
+def get_student_count():
+    db = get_db_connection()
+    try:
+        class_id = request.args.get('class_id')
+        cursor = db.cursor(dictionary=True)
+        sql = "SELECT COUNT(*) as student_count FROM class_students WHERE class_id = %s"
+        cursor.execute(sql, (class_id,))
+        res = cursor.fetchone()
+    finally:
+        cursor.close()
+        db.close()
+    return jsonify({'message': 'Student count retrieved', 'student_count': res['student_count']})
 
  # POST functions
 @class_students_bp.route('/add_student_to_class', methods=['POST'])

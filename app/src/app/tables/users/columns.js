@@ -81,7 +81,7 @@ export const columns = [
                           <div>
                             <DropdownMenuItem asChild>
                             <Link href={`classes/teacher/${user.id}`}>
-                                Manage Student's Classes
+                                Manage Teacher's Classes
                               </Link>
                             </DropdownMenuItem>
                           </div>
