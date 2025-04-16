@@ -4,8 +4,9 @@ import {jwtDecode} from "jwt-decode";
 import {useRouter} from "next/router";
 import axios from "axios";
 import config from "@/config";
-import {DataTable} from "@/app/users/data-table";
-import {columns} from "@/app/users/columns";
+import {DataTable} from "@/app/tables/users/data-table";
+import {columns} from "@/app/tables/users/columns";
+import {Label} from "@/components/ui/label";
 
 
 export default function Users() {
@@ -48,6 +49,10 @@ export default function Users() {
   return (
     <Layout>
       <div className="container mx-auto p-12">
+      <Label>
+        <h1 className="text-3xl font-bold">Users</h1>
+        <p className="text-gray-500">Manage users in the system</p>
+      </Label>
       {loading ? (
         <div className="flex items-center justify-center h-screen">
           <h1 className="text-3xl font-bold">Loading...</h1>

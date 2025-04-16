@@ -1,5 +1,4 @@
 "use client"
-import { columnDefs } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react" 
 import { Button } from "@/components/ui/button"
 import {
@@ -10,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ArrowUpDown } from "lucide-react"
+import Link from "next/link"
 
 export const roles = ['Admin', 'Student', 'Teacher'];
 
@@ -71,12 +70,20 @@ export const columns = [
                         <DropdownMenuSeparator />
                         {userRole === 'Student' ? (
                           <div>
-                            <DropdownMenuItem>Manage Student's Classes</DropdownMenuItem>
+                            <DropdownMenuItem asChild key={user.id}>
+                              <Link href={`classes/student/${user.id}`}>
+                                Manage Student's Classes
+                              </Link>
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Manage Payments</DropdownMenuItem>
                           </div>
                         ) : userRole === 'Teacher' ? (
                           <div>
-                            <DropdownMenuItem>Manage Teacher's Classes</DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                            <Link href={`classes/teacher/${user.id}`}>
+                                Manage Student's Classes
+                              </Link>
+                            </DropdownMenuItem>
                           </div>
                         ): null}
                         <DropdownMenuItem>Manage Profile</DropdownMenuItem>

@@ -1,7 +1,17 @@
 from db_connection import get_db_connection
 from flask import Blueprint, request, jsonify
+from datetime import timedelta, time
 
 classes_bp = Blueprint('classes', __name__)
+
+def format_time(time_obj):
+    if isinstance(time_obj, timedelta):
+        # Convert timedelta to seconds and then to a time object
+        total_seconds = time_obj.total_seconds()
+        hours = int(total_seconds // 3600)
+        minutes = int((total_seconds % 3600) // 60)
+        time_obj = time(hours, minutes)
+    return time_obj.strftime("%I:%M %p")
 
 # GET functions
 @classes_bp.route('/classes', methods=['GET'])
@@ -18,9 +28,9 @@ def get_classes():
 
 @classes_bp.route('/all-classes-by-student', methods=['GET'])
 def get_all_classes_by_student():
-    user_id = request.args.get('student_id')
     db = get_db_connection()
     try:
+        user_id = request.args.get('student_id')
         cursor = db.cursor(dictionary=True)
         sql = "SELECT * FROM class_students WHERE user_id = %s"
         vals = (user_id, )
@@ -33,11 +43,22 @@ def get_all_classes_by_student():
                 val = (row['class_id'], )
                 cursor.execute(sql, val)
                 class_info = cursor.fetchone()
+                class_info['student_id'] = user_id
+                
+                # Convert timedelta fields (if any) to strings
+                if 'start_time' in class_info and isinstance(class_info['start_time'], timedelta):
+                    class_info['start_time'] = format_time(class_info['start_time'])
+                if 'end_time' in class_info and isinstance(class_info['end_time'], timedelta):
+                    class_info['end_time'] = format_time(class_info['end_time'])
+
+                
                 if class_info:
                     classes.append(class_info)
     finally:
         db.close()
         cursor.close()
+    if not classes:
+        return jsonify({'message': 'No classes found for this student'}), 404
     return jsonify({'message': 'Classes retrieved', 'classes': classes})
 
 @classes_bp.route('/all-classes-by-teacher', methods=['GET'])
@@ -50,6 +71,8 @@ def get_classes_by_teacher():
         val = (id, )
         cursor.execute(sql, val)
         res = cursor.fetchall()
+        res['start_time'] = format_time(res['start_time'])
+        res['end_time'] = format_time(res['end_time'])
     finally:
         db.close()
         cursor.close()

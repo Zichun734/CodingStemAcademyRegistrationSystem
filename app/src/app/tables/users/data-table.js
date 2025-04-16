@@ -1,5 +1,4 @@
 "use client"
- 
 import {
   ColumnDef,
   SortingState,
@@ -137,10 +136,13 @@ export function  DataTable({columns, data}) {
                       <TableHead key={header.id}>
                         {header.isPlaceholder
                           ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                          : (
+                            <div className="flex items-center justify-between">
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                            </div>)}
                       </TableHead>
                     );
                   })}
@@ -152,7 +154,6 @@ export function  DataTable({columns, data}) {
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
