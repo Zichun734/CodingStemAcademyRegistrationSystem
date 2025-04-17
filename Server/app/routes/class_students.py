@@ -107,14 +107,14 @@ def add_multiple_classes():
     return jsonify({'message': 'Students have been added to classes successfully'})
 
 # DELETE functions
-@class_students_bp.route('/delete_student_from_class', methods=['DELETE'])
+@class_students_bp.route('/delete-student-from-class', methods=['DELETE'])
 def delete_student_class():
     student_id = request.args.get('student_id')
     class_id = request.args.get('class_id')
     my_db = get_db_connection()
     try:
         cursor = my_db.cursor()
-        sql = "DELETE FROM class_students WHERE student_id = %s AND class_id = %s"
+        sql = "DELETE FROM class_students WHERE user_id = %s AND class_id = %s"
         val = (student_id, class_id)
         cursor.execute(sql, val)
         my_db.commit()

@@ -5,7 +5,7 @@ import config from "@/config";
 export const deleteStudentFromClass = async (class_id, student_id) => {
     try {
         const response = await axios.delete(`${config.backendUrl}/delete-student-from-class`, {
-            data: {
+            params: {
                 student_id: student_id,
                 class_id: class_id
             }

@@ -127,7 +127,7 @@ export default function teacherClasses() {
                         <h1 className="text-3xl font-bold">{teacher['first_name']} {teacher['last_name']}'s Classes</h1>
                         <p className="text-gray-500">Teacher</p>
                     </Label>
-                    <DataTable columns={columns} data={classes} />
+                    <DataTable columns={columns} data={classes} teacherId={teacherId} />
                 </div>
             ) : (
                 <div className="text-center">

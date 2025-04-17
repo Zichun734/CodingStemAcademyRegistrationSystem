@@ -41,7 +41,7 @@ export const columns = [
         const classData = row.original;
         return (
             <Button 
-                onClick={() => deleteStudentFromClass(classData["id", classData["student_id"]])}
+                onClick={() => deleteStudentFromClass(classData["id"], classData["student_id"])}
                 variant="ghost" 
                 className="h-8 w-8 p-0">
                 <Trash className="h-4 w-4" />

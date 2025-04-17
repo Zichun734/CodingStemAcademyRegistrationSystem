@@ -1,13 +1,8 @@
 "use client"
 import {
-  ColumnDef,
-  SortingState,
-  ColumnFilterState,
   flexRender,
   getPaginationRowModel,
   getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 import {
@@ -18,17 +13,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
+
  
 
-export function  DataTable({columns, data}) {
-  const table = useReactTable({
-      data,
-      columns,
-      getCoreRowModel: getCoreRowModel(),
-    });
+export function  DataTable({columns, data, teacherId}) {
+    const table = useReactTable({
+        data,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        });
   
     return (
       <div className="py-4">
@@ -78,17 +74,26 @@ export function  DataTable({columns, data}) {
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-end">
-            <Button 
-                variant="default"
-                size="sm"
-                value="Admin"
-                onClick={() => {
-
-                }}
-                >
+        <div className="flex items-center justify-end space-x-2 py-4">
+            <Link href={`/admin/classes/teacher/${teacherId}/create`}>
                     Add class
+            </Link>
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+            >
+                Previous
             </Button>
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+            >
+            Next
+          </Button>
         </div>
   </div>
   );

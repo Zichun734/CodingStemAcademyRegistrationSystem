@@ -58,7 +58,7 @@ def get_all_classes_by_student():
         db.close()
         cursor.close()
     if not classes:
-        return jsonify({'message': 'No classes found for this student'}), 404
+        return jsonify({'message': 'No classes found for this student', 'classes': []})
     return jsonify({'message': 'Classes retrieved', 'classes': classes})
 
 @classes_bp.route('/all-classes-by-teacher', methods=['GET'])
@@ -101,21 +101,32 @@ def get_class(id):
 # POST functions
 
 
-@classes_bp.route('/add_class', methods=['POST'])
+@classes_bp.route('/add-class', methods=['POST'])
 def add_class():
-    data = request.get_json()
-    teacher_id = data.get('teacher_id')
-    class_name = data.get('class_name')
-    subject = data.get('subject')
-    semester_id = data.get('semester_id')
-
     my_db = get_db_connection()
-    cursor = my_db.cursor()
-    sql = "INSERT INTO classes (teacher_id, class_name, subject, semester_id) VALUES(%s, %s, %s, %s)"
-    vals = (teacher_id, class_name, subject, semester_id)
-    cursor.execute(sql, vals)
-    my_db.commit()
-    return jsonify({'message': 'Class has been added successfully'})
+    data = request.get_json()
+    try: 
+        teacher_id = data.get('teacher_id')
+        class_name = data.get('class_name')
+        subject = data.get('subject')
+        semester_id = data.get('semester_id')
+        day = data.get('day')
+        start_time = data.get('start_time')
+        end_time = data.get('end_time')
+
+        cursor = my_db.cursor()
+        sql = "INSERT INTO classes (teacher_id, class_name, subject, semester_id, day, start_time, end_time) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+        vals = (teacher_id, class_name, subject, semester_id, day, start_time, end_time)
+        cursor.execute(sql, vals)
+        my_db.commit()
+    
+        return jsonify({'message': 'Class has been added successfully'})
+    except Exception as e:
+        my_db.rollback()
+        return jsonify({'message': 'Error occurred while adding class', 'error': str(e)}), 500
+    finally:
+        cursor.close()
+        my_db.close()
 
 
 # PUT functions
