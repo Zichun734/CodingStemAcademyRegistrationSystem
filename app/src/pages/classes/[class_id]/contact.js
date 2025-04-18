@@ -8,7 +8,7 @@ import config from "@/config";
 export default function Grades() {
   const router = useRouter();
   const { class_id } = router.query;
-  const [teacherData, setTeacherData] = useState({});
+  const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function Grades() {
   }, [class_id])
 
   useEffect(() => {
-    if (teacherData !== {}) {
+    if (teacherData) {
       console.log("Teacher data fetched successfully");
       setLoading(false);
     }

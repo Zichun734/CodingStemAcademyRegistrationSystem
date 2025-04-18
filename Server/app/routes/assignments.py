@@ -69,17 +69,17 @@ def add_assignment_route():
     description = data.get('description')
     due_date = data.get('due_date')
 
-    add_assignment(class_id, description, due_date)
+    add_assignment(class_id, description, due_date, title)
     return jsonify({"message": "Assignment added"})
 
-def add_assignment(class_id, description, due_date):
+def add_assignment(class_id, description, due_date, title):
     my_db = get_db_connection()
     try:
         cursor = my_db.cursor()
         sql = "INSERT INTO assignments " \
-        "(class_id, description, due_date) " \
-        "VALUES (%s, %s, %s)"
-        vals = (class_id, description, due_date)
+        "(class_id, description, due_date, title) " \
+        "VALUES (%s, %s, %s, %s)"
+        vals = (class_id, description, due_date, title)
         cursor.execute(sql, vals)
         my_db.commit()
     finally:
@@ -92,16 +92,17 @@ def update_assignment_route():
     data = request.get_json()
     id = data.get('id')
     class_id = data.get('class_id')
+    title = data.get('title')
     description = data.get('description')
     due_date = data.get('due_date')
 
-    assignment = update_assignment(id, class_id, description, due_date)
+    assignment = update_assignment(id, class_id, description, due_date, title)
     if assignment is None:
         return jsonify({"message": "Assignment not found"})
     return jsonify({"message": "Assignment updated", "assignment": assignment})
 
 
-def update_assignment(id, class_id, description, due_date):
+def update_assignment(id, class_id, description, due_date, title):
     my_db = get_db_connection()
     try:
         cursor = my_db.cursor(dictionary=True)
@@ -112,9 +113,9 @@ def update_assignment(id, class_id, description, due_date):
         if assignment is None:
             return None
         sql = "UPDATE assignments SET class_id = %s, description" \
-        " = %s, due_date = %s, WHERE id = %s"
+        " = %s, due_date = %s, title = %s WHERE id = %s"
         vals = (class_id if class_id else assignment["class_id"], description if description else assignment["description"],
-                due_date if due_date else assignment["due_date"], id)
+                due_date if due_date else assignment["due_date"], title if title else assignment["title"], id)
         cursor.execute(sql, vals)
         my_db.commit()
         res = cursor.fetchone()

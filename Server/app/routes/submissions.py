@@ -132,3 +132,22 @@ def get_submissions_by_class():
         cursor.close()
         my_db.close()
     return jsonify({"message": "Retrieved All Submissions", "submissions": submissions})
+
+
+@submissions_bp.route('/submissions', methods=['POST'])
+def create_submission():
+    data = request.get_json()
+    assignment_id = data['assignment_id']
+    student_id = data['student_id']
+    content = data['content']
+    my_db = get_db_connection()
+    try:
+        cursor = my_db.cursor(dictionary=True)
+        cursor.execute("INSERT INTO submissions (assignment_id, student_id, content) VALUES (%s, %s, %s)",
+                       (assignment_id, student_id, content))
+        my_db.commit()
+        submission_id = cursor.lastrowid
+    finally:
+        cursor.close()
+        my_db.close()
+    return jsonify({"message": "Submission Created", "submission_id": submission_id})

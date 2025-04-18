@@ -1,59 +1,183 @@
-import { useRouter } from 'next/router';
-import {Layout} from "@/app/layout";
-import {useEffect, useState} from "react";
-import {jwtDecode} from "jwt-decode";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import axios from "axios";
+import { Layout } from "@/app/layout";
 import config from "@/config";
-import {Card} from "@/components/ui/card";
+import { jwtDecode } from "jwt-decode";
+import { 
+  Card, 
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { columns } from "@/app/tables/students/columns";
+import { DataTable } from "@/app/tables/students/data-table";
 
-const ClassPage = () => {
+export default function ClassDetails() {
   const router = useRouter();
-  const { class_id } = router.query; // Access the dynamic ID from the URL
-  const [classData, setClassData] = useState({});
+  const { class_id } = router.query;
+
+  const [classDetails, setClassDetails] = useState(null);
   const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      router.push('/').then(() => {console.log("Returning logged out user to main")})
+      router.push("/").then(() => {
+        console.log("Redirected to home page");
+      });
+    } else {
+      const decodedToken = jwtDecode(token);
+      setUser(decodedToken["sub"]);
+      console.log("Decoded token:", decodedToken);
     }
-    const user = jwtDecode(token);
-    setUser(user['sub']);
-  }, []);
+  }, [])
 
   useEffect(() => {
-    const fetchClassData = async () => {
-      axios.get(`${config.backendUrl}/class/${class_id}`)
-        .then(response => {
-          console.log(response.data);
-          setClassData(response.data['class']);
-        })
-        .catch(error => {
-          console.error("Error fetching class data:", error);
+    const fetchTeacher = async (teacherId) => {
+      try {
+        const response = await axios.get(`${config.backendUrl}/user`, {
+          params: { id: teacherId },
         });
-    };
+        return response.data.user;
+      } catch (err) {
+        console.error("Error fetching teacher:", err);
+        return null;
+      }
+    }
+
+    const fetchSemester = async (semesterId) => {
+      try {
+        const response = await axios.get(`${config.backendUrl}/semester`, {
+          params: { id: semesterId },
+        });
+        console.log("Fetched semester:", response.data.semester);
+        return response.data.semester;
+      } catch (err) {
+        console.error("Error fetching semester:", err);
+        return null;
+      }
+    }
+
+    const fetchStudents = async (classId) => {
+      try {
+        const response = await axios.get(`${config.backendUrl}/get-students-by-class`, {
+          params: { class_id: classId },
+        })
+        console.log("Fetched students:", response.data.students);
+        
+        const finalStudents = response.data.students.map((student) => ({
+          ...student,
+          class_id: classId,
+        }));
+
+        return finalStudents;
+      } catch (err) {
+        console.error("Error fetching students:", err);
+        return null;
+      }
+    } 
 
     if (class_id) {
-      fetchClassData().then(r => console.log("Fetched class data"))
-        .catch(error => {
-          console.error("Error fetching class data:", error);
+      const fetchClassDetails = async () => {
+        try {
+          const response = await axios.get(`${config.backendUrl}/class/${class_id}`);
+          fetchTeacher(response.data.class.teacher_id)
+            .then((teacher) => {
+              const teacherName = teacher ? `${teacher.first_name} ${teacher.last_name}` : "N/A";
+              fetchSemester(response.data.class.semester_id).then((semester) => {
+                setClassDetails({
+                  ...response.data.class,
+                  teacher_name: teacherName,
+                  semester_name: semester ? semester.name : "N/A",
+                });
+              });
+          });
+        } catch (err) {
+          console.error("Error fetching class details:", err);
+          setError("Failed to load class details.");
+        }
+      };
+
+      fetchClassDetails();
+      fetchStudents(class_id)
+        .then((students) => {
+          setStudents(students);
+        })
+        .catch((err) => {
+          console.error("Error fetching students:", err);
         });
     }
-  }, [class_id])
+  }, [class_id]);
+
+  useEffect(() => {
+    if (students && classDetails) {
+      setLoading(false);
+    }
+  }, [students, classDetails])
+  
 
   return (
-    <Layout title={classData.class_name}>
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <h1 className="text-4xl font-bold mb-4">Class Details</h1>
-        <Card className="grid grid-cols-1 md:grid-cols-2 p-4">
-          <p>Course ID: {class_id}</p>
-          <p>Semester ID: {classData.semester_id}</p>
-          <p>Subject: {classData.subject}</p>
-          <p>Teacher ID: {classData.teacher_id}</p>
+    <Layout>
+      {loading ? (
+          <div className="flex items-center justify-center h-screen">loading</div>
+      )
+      : (
+      <div className="container mx-auto p-8 flex flex-col space-y-8">
+        <h1 className="text-3xl font-bold mb-6">Class Details</h1>
+        <Card className="w-full">
+          <CardHeader className="w-[400px]">
+            <CardTitle className="@[250px]/card:text-4xl text-2xl font-semibold tabular-nums">{classDetails.class_name}</CardTitle>
+            <Separator />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col space-y-2">
+                <Label>Subject:</Label>
+                <p className="text-xl font-semibold tabular-nums">{classDetails.subject}</p>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <Label>Time:</Label>
+                <p className="text-xl font-semibold tabular-nums">{classDetails.day} from {classDetails.start_time} to {classDetails.end_time}</p>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <Label>Teacher:</Label>
+                <p className="text-xl font-semibold tabular-nums">{classDetails.teacher_name}</p>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <Label>Semester:</Label>
+                <p className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">{classDetails.semester_name}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <h1 className="text-3xl font-bold mb-6">Upcoming Assignments</h1>
+        <Card className="w-full">
+          <CardHeader className="w-[400px]">
+            <CardTitle className="@[250px]/card:text-4xl text-2xl font-semibold tabular-nums">Assignments</CardTitle>
+            <Separator />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col space-y-2">
+                <Label>Assignment 1:</Label>
+                <p className="text-xl font-semibold tabular-nums">Assignment 1 details</p>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <Label>Assignment 2:</Label>
+                <p className="text-xl font-semibold tabular-nums">Assignment 2 details</p>
+              </div>
+            </div>
+          </CardContent>
         </Card>
       </div>
+      )}
     </Layout>
   );
-};
-
-export default ClassPage;
+}
