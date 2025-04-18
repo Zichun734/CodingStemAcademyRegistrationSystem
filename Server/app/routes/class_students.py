@@ -111,6 +111,7 @@ def add_multiple_classes():
 def delete_student_class():
     student_id = request.args.get('student_id')
     class_id = request.args.get('class_id')
+    print(f"Deleting student {student_id} from class {class_id}")
     my_db = get_db_connection()
     try:
         cursor = my_db.cursor()

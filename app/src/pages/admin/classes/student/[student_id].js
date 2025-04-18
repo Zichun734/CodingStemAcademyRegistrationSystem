@@ -70,11 +70,12 @@ export default function StudentClasses() {
                 console.log(response.data);
                 let classData = response.data['classes'];
                 fetchTeachers(classData).then((teachers) => {
+                    console.log("Fetched teachers:", teachers);
                     const updatedClasses = classData.map((classItem) => {
                         const teacher = teachers.find((teacher) => teacher.id === classItem['teacher_id']);
                         return {
                             ...classItem,
-                            teacher_name: teacher ? `${teacher.first_name} ${teacher.last_name}` : 'Unknown'
+                            teacher_name: teacher ? `${teacher.first_name} ${teacher.last_name}` : 'N/A'
                         };
                     });
 

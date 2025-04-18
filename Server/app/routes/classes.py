@@ -21,6 +21,11 @@ def get_classes():
         cursor = my_db.cursor(dictionary=True)
         cursor.execute("SELECT * FROM classes")
         res = cursor.fetchall()
+        for classData in res:
+            if 'start_time' in classData and isinstance(classData['start_time'], timedelta):
+                classData['start_time'] = format_time(classData['start_time'])
+            if 'end_time' in classData and isinstance(classData['end_time'], timedelta):
+                classData['end_time'] = format_time(classData['end_time'])
     finally:
         cursor.close()
         my_db.close()
@@ -92,6 +97,12 @@ def get_class(id):
         val = (id, )
         cursor.execute(sql, val)
         res = cursor.fetchone()
+        if res is None:
+            return jsonify({'message': 'Class not found'}), 404
+        if 'start_time' in res and isinstance(res['start_time'], timedelta):
+            res['start_time'] = format_time(res['start_time'])
+        if 'end_time' in res and isinstance(res['end_time'], timedelta):
+            res['end_time'] = format_time(res['end_time'])
     finally:
         db.close()
         cursor.close()

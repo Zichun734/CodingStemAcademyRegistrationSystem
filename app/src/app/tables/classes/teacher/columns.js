@@ -9,6 +9,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import Link from "next/link"
 
 
 export const columns = [
@@ -59,8 +60,10 @@ export const columns = [
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                        Manage Class
+                    <DropdownMenuItem asChild>
+                        <Link href={`/admin/classes/${classData['id']}`}>
+                            Manage Class
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         Remove from class

@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button"
 
  
 
-export function  DataTable({columns, data, teacherId}) {
+export function DataTable({columns, data, teacherId}) {
     const table = useReactTable({
         data,
         columns,
@@ -76,8 +76,11 @@ export function  DataTable({columns, data, teacherId}) {
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
             <Link href={`/admin/classes/teacher/${teacherId}/create`}>
-                    Add class
+                Add class
             </Link>
+            <span className="text-sm">
+              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+            </span>
             <Button
                 variant="outline"
                 size="sm"

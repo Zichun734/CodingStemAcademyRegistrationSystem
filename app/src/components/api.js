@@ -4,6 +4,7 @@ import config from "@/config";
 
 export const deleteStudentFromClass = async (class_id, student_id) => {
     try {
+        console.log("Deleting student from class...", student_id, class_id);
         const response = await axios.delete(`${config.backendUrl}/delete-student-from-class`, {
             params: {
                 student_id: student_id,
@@ -11,14 +12,19 @@ export const deleteStudentFromClass = async (class_id, student_id) => {
             }
         });
         console.log(response.data);
-        if (response.data.success) {
-            alert("Student deleted from class successfully");
-            // Optionally, you can refresh the data or redirect the user
-        } else {
-            alert("Failed to delete student from class");
-        }
     }
     catch (error) {
         console.error("Error deleting student from class:", error);
+    }
+}
+
+export const deleteClass = async (class_id) => {
+    try {
+        console.log("Deleting class...", class_id);
+        const response = await axios.delete(`${config.backendUrl}/delete_class/${class_id}`);
+        console.log(response.data);
+    }
+    catch (error) {
+        console.error("Error deleting class:", error);
     }
 }

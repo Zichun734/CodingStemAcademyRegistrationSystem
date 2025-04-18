@@ -18,3 +18,20 @@ def get_semesters_by_class_route():
     if not semesters:
         return jsonify({'message': 'No semesters found'}), 200
     return jsonify({'message': 'Semesters retrieved', 'semesters': semesters}), 200
+
+
+@semesters_bp.route('/semester', methods=['GET'])
+def get_semester_by_id_route():
+    db = get_db_connection()
+    semester_id = request.args.get('id')
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "SELECT * FROM semesters WHERE id = %s"
+        cursor.execute(sql, (semester_id,))
+        semester = cursor.fetchone()
+    finally:
+        db.close()
+        cursor.close()
+    if not semester:
+        return jsonify({'message': 'Semester not found'}), 404
+    return jsonify({'message': 'Semester retrieved', 'semester': semester}), 200

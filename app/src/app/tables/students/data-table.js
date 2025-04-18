@@ -23,7 +23,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
  
 
-export function  DataTable({columns, data}) {
+export function DataTable({columns, data}) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [activeRole, setActiveRole] = useState(null);
@@ -45,87 +45,6 @@ export function  DataTable({columns, data}) {
   
     return (
       <div>
-        <div className="flex items-center py-4 space-x-2">
-          <Input
-            placeholder="Filter emails..."
-            value={(table.getColumn("email")?.getFilterValue()) ?? ""}
-            onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <span>Roles:</span>
-            <Button 
-              variant={activeRole === "Admin" ? "default" : "outline"}
-              size="sm"
-              value="Admin"
-              onClick={(e) => {
-                if (activeRole === e.currentTarget.value) {
-                  setActiveRole(null);
-                  table.setColumnFilters((old) =>
-                    old.filter((f) => f.id !== "role")
-                  );
-                  return;
-                }
-                const selectedRole = e.currentTarget.value;
-                setActiveRole(selectedRole);
-                table.setColumnFilters((old) => [
-                  ...old,
-                  { id: "role", value: selectedRole },
-                ]);
-              }}
-
-            >
-              Admin
-            </Button>
-            <Button 
-              variant={activeRole === "Student" ? "default" : "outline"}
-              value="Student"
-              size="sm"
-              onClick={(e) => {
-                if (activeRole === e.currentTarget.value) {
-                  setActiveRole(null);
-                  table.setColumnFilters((old) =>
-                    old.filter((f) => f.id !== "role")
-                  );
-                  return;
-                }
-                const selectedRole = e.currentTarget.value;
-                setActiveRole(selectedRole);
-                table.setColumnFilters((old) => [
-                  ...old,
-                  { id: "role", value: selectedRole },
-                ]);
-              }}
-              >
-              Student
-            </Button>
-            <Button
-              variant={activeRole === "Teacher" ? "default" : "outline"}
-              value="Teacher"
-              size="sm"
-              onClick={(e) => {
-                if (activeRole === e.currentTarget.value) {
-                  setActiveRole(null);
-                  table.setColumnFilters((old) =>
-                    old.filter((f) => f.id !== "role")
-                  );
-                  return;
-                }
-                const selectedRole = e.currentTarget.value;
-                setActiveRole(selectedRole);
-                table.setColumnFilters((old) => [
-                  ...old,
-                  { id: "role", value: selectedRole },
-                ]);
-              }}
-              >
-              Teacher
-            </Button>
-          </div>
-        </div>
-
         <div className="rounded-md border">
           <Table>
             <TableHeader>
@@ -173,6 +92,9 @@ export function  DataTable({columns, data}) {
           </Table>
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
+          <span className="text-sm">
+            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          </span>
           <Button
             variant="outline"
             size="sm"
@@ -181,9 +103,6 @@ export function  DataTable({columns, data}) {
           >
             Previous
           </Button>
-          <span className="text-sm">
-            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-          </span>
           <Button
             variant="outline"
             size="sm"

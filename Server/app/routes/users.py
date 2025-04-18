@@ -50,6 +50,19 @@ def get_user_by_id():
         cursor.close()
     return jsonify({"message": "User retrieved", "user": user})
 
+@users_bp.route('/teachers', methods=['GET'])
+def get_teachers():
+    db = get_db_connection()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "SELECT * FROM users WHERE role = 'Teacher'"
+        cursor.execute(sql)
+        teachers = cursor.fetchall()
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({"message": "Retrieved All Teachers", "teachers": teachers})
+
 @users_bp.route('/get-teacher-by-class', methods=['GET'])
 def get_teacher_by_class():
     id = request.args.get('class_id')
@@ -72,6 +85,30 @@ def get_teacher_by_class():
     if teacher is None:
         return jsonify({"message": "Teacher not found"})
     return jsonify({"message": "Teacher retrieved", "teacher": teacher})
+
+
+@users_bp.route('/get-students-by-class', methods=['GET'])
+def get_students_by_class():
+    class_id = request.args.get('class_id')
+    db = get_db_connection()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "SELECT * FROM class_students WHERE class_id = %s"
+        val = (class_id, )
+        cursor.execute(sql, val)
+        students = cursor.fetchall()
+        student_list = []
+        for row in students:
+            sql = "SELECT * FROM users WHERE id = %s"
+            val = (row['user_id'], )
+            cursor.execute(sql, val)
+            student_info = cursor.fetchone()
+            if student_info is not None:
+                student_list.append(student_info)
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({"message": "Students retrieved", "students": student_list})
 
 # POST functions
 def add_auth(user_id, password):
