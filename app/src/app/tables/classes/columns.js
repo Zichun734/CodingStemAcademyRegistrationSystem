@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
 import { deleteClass } from "@/components/api"
+import { ClassModifySheet } from "@/app/sheets/classes-sheet"
+import { SheetTrigger } from "@/components/ui/sheet"
 
 
 export const columns = [
@@ -75,33 +77,35 @@ export const columns = [
     cell: ({ row }) => {
         const classData = row.original;
         return (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Open menu</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                        <Link href={`/admin/classes/${classData.id}`}>View Class</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        Edit class
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => 
-                        deleteClass(classData.id)
-                        .then(() => {
-                            console.log("Class deleted")
-                            window.location.reload()
-                        })
-                    }>
-                        Delete class
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <ClassModifySheet classData={classData}>
+                <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Open menu</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                            <Link href={`/admin/classes/${classData.id}`} asChild>View Class</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <SheetTrigger>Modify Class</SheetTrigger>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => 
+                            deleteClass(classData.id)
+                            .then(() => {
+                                console.log("Class deleted")
+                                window.location.reload()
+                            })
+                        }>
+                            Delete class
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </ClassModifySheet>
         )
     }
     }

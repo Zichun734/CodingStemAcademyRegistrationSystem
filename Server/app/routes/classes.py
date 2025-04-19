@@ -148,6 +148,9 @@ def update_class(id):
     class_name = data.get('class_name')
     subject = data.get('subject')
     semester_id = data.get('semester_id')
+    day = data.get('day')
+    start_time = data.get('start_time')
+    end_time = data.get('end_time')
     my_db = get_db_connection()
     try:
         cursor = my_db.cursor()
@@ -157,9 +160,11 @@ def update_class(id):
         classes = cursor.fetchone()
         if classes is None:
             return None
-        sql = "UPDATE classes SET teacher_id = %s, class_name = %s, subject = %s, semester_id = %s"
+        sql = "UPDATE classes SET teacher_id = %s, class_name = %s, subject = %s, semester_id = %s, day = %s, start_time = %s, end_time = %s WHERE id = %s"
         vals = (
-            teacher_id if teacher_id else classes["teacher_id"], class_name if class_name else classes["class_name"], subject if subject else classes["subject"], semester_id if semester_id else classes["semester_id"], id
+            teacher_id if teacher_id else classes["teacher_id"], class_name if class_name else classes["class_name"], 
+            subject if subject else classes["subject"], semester_id if semester_id else classes["semester_id"],
+            day if day else classes["day"], start_time if start_time else classes["start_time"], end_time if end_time else classes["end_time"], id
         )
         cursor.execute(sql, vals)
         my_db.commit()
