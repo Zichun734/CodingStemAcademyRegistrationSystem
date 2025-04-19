@@ -7,6 +7,7 @@ from .routes.assignments import assignments_bp
 from .routes.class_students import class_students_bp
 from .routes.scores import scores_bp
 from .routes.semesters import semesters_bp
+from .routes.payments import payments_bp
 
 
 def create_app():
@@ -16,6 +17,7 @@ def create_app():
     flask_app.config["JWT_SECRET_KEY"] = "temporary secret key"
     jwt = JWTManager(flask_app)
     # Import and register blueprints
+    flask_app.register_blueprint(payments_bp)
     flask_app.register_blueprint(semesters_bp)
     flask_app.register_blueprint(users_bp)
     flask_app.register_blueprint(submissions_bp)
