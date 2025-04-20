@@ -28,13 +28,21 @@ import {
 import { z } from "zod"
 
 const formSchema = z.object({
-  first_name: z.string().min(1, {
-    message: "First name is required",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address",
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
+  birth_date: z.string().min(1, "Birth date is required"),
+  email: z.string().email("Invalid email address"),
+  gender: z.enum(["Male", "Female", "Other"]),
+  phone: z.string().min(1, "Phone number is required"),
+  password: z.string().min(8, "password must be at least 8 characters long"),
+  address: z.string().min(1, "Address is required"),
+  guardian: z.string().min(1, "Guardian name is required"),
+  guardian_phone: z.string().min(1, "Guardian phone number is required"),
+  health_ins: z.string().min(1, "Health insurance is required"),
+  health_ins_number: z.string().min(1, "Health insurance number is required"),
+  role: z.enum(["Student", "Teacher", "Admin"]),
+  grade_level: z.string().min(1, "Grade level is required"),
   })
-})
 
 export function DatePickerDemo() {
   const [date, setDate] = useState(0)
@@ -57,7 +65,7 @@ export function DatePickerDemo() {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={setDate} 
           initialFocus
         />
       </PopoverContent>
@@ -86,22 +94,33 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const gradeLevels = Array.from({length: 12}, (_, i) => i + 1);
 
-  const form = useForm<z.infer<typeof formSchema>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       first_name: "",
+      last_name: "",
+      birth_date: "",
       email: "",
+      gender: "",
+      phone: "",
+      passsword: "",
+      address: "",
+      guardian: "",
+      guardian_phone: "",
+      health_ins: "",
+      health_ins_number: "",
+      role: "",
+      grade_level: ""
     },
   })
 
-  function handleSignUp(e) {
-    e.preventDefault();
+  function handleSignUp(values) {
 
-    if (formData.password !== confirmPassword) {
+    if (values.password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
-    axios.post(`${config.backendUrl}/register`, formData).then(response => {
+    axios.post(`${config.backendUrl}/register`, values).then(response => {
       console.log("Successfully registered: " + response.data['message']);
       if (response.data['access_token']) {
         localStorage.setItem('token', response.data['access_token']);
@@ -123,152 +142,196 @@ export default function Register() {
   }
 
   return (
-    <div>
+    <div className = "flex flex-col items-center justify-center min-h-screen">
       <h1>Register</h1>
       <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSignUp)} className="space-y-8">
         <FormField
           control={form.control}
-          name="username"
+          name="first_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="First Name" />
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="last_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Last Name" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="birth_date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Birth Date</FormLabel>
+              <FormControl>
+                <Input placeholder="Birth Date" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="Email" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="gender"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Gender</FormLabel>
+              <FormControl>
+                <Input placeholder="Gender" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone</FormLabel>
+              <FormControl>
+                <Input placeholder="Phone" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input placeholder="Password" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Address</FormLabel>
+              <FormControl>
+                <Input placeholder="Address" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="guardian"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Guardian</FormLabel>
+              <FormControl>
+                <Input placeholder="Guardian" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="guardian_phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Guardian Phone</FormLabel>
+              <FormControl>
+                <Input placeholder="Guardian Phone" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="health_ins"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Health Insurance</FormLabel>
+              <FormControl>
+                <Input placeholder="Health Insurance" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="health_ins_number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Health Ins Number</FormLabel>
+              <FormControl>
+                <Input placeholder="Health Ins Number" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Role</FormLabel>
+              <FormControl>
+                <Input placeholder="Role" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="grade_level"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Grade Level</FormLabel>
+              <FormControl>
+                <Input placeholder="Grade Level" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
         <Button type="submit">Submit</Button>
       </form>
     </Form>
-      {/* <form onSubmit={handleSignUp}>
-        <input
-          type="text"
-          name="first_name"
-          value={formData.first_name}
-          onChange={handleChange}
-          placeholder="First Name"
-        />
-       <br />
-        <input
-          type="text"
-          name="last_name"
-          value={formData.last_name}
-          onChange={handleChange}
-          placeholder="Last Name"
-        />
-        <br />
-        <DatePickerDemo />
-        <br />
-        <select
-          name="gender"
-          value={formData.gender}
-          onChange={handleChange}
-        >
-          <option value="">Gender</option>
-          <option key="Male" value="Male">
-            Male
-          </option>
-          <option key="Female" value="Female">
-            Female
-          </option>
-          <option key="Other" value="Other">
-            Other
-          </option>
-        </select>
-        <br />
-        <input
-          type="text"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          placeholder="Phone"
-          />
-        <br />
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email"
-          />
-        <br />
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-          />
-        <br />
-        <input
-          type="password"
-          name="confirm_password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm Password"
-          />
-        <br />
-        <input
-          type="text"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          placeholder="Address"
-          />
-        <br />
-        <input
-          type="text"
-          name="guardian"
-          value={formData.guardian}
-          onChange={handleChange}
-          placeholder="Guardian Name"
-          />
-        <br />
-        <input
-          type="text"
-          name="guardian_phone"
-          value={formData.guardian_phone}
-          onChange={handleChange}
-          placeholder="Guardian Phone"
-          />
-        <br />
-        <input
-          type="text"
-          name="health_ins"
-          value={formData.health_ins}
-          onChange={handleChange}
-          placeholder="Health Insurance"
-          />
-        <br />
-        <input
-          type="text"
-          name="health_ins_number"
-          value={formData.health_ins_number}
-          onChange={handleChange}
-          placeholder="Health Insurance Number"
-          />
-        <br />
-        <select
-          name="grade_level"
-          value={formData.grade_level}
-          onChange={handleChange}
-          >
-          <option value="">Select Grade Level</option>
-          {gradeLevels.map((level) => (
-            <option key={level} value={level}>
-              {level}
-            </option>
-          ))}
-        </select>
-        <br />
-        <button type="submit">Register</button>
-      </form> */}
     </div>
   );
 }
