@@ -16,7 +16,7 @@ export default function Home() {
     <div className={"flex items-center justify-center h-screen"}>
       <Card className={"w-[350px]"}>
         <CardHeader className="text-center">
-          <CardTitle className="text-4xl">Stem Coding Academy</CardTitle>
+          <CardTitle className="text-4xl">Stem Action Teen Institution</CardTitle>
           <CardDescription>
             Where learning meets innovation
           </CardDescription>

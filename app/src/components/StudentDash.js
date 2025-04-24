@@ -61,26 +61,44 @@ const StudentDash = () => {
     }
   }, [semester, user]);
 
+  if (!user || !classes) {
+    return (
+      <div className="p-6 min-h-screen">
+        <h1 className="text-4xl font-bold mb-4">Teacher Dashboard</h1>
+        <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Skeleton className="w-[300px] h-[200px] rounded-xl" />
+            <Skeleton className="w-[300px] h-[200px] rounded-xl" />
+            <Skeleton className="w-[300px] h-[200px] rounded-xl" />
+            <Skeleton className="w-[300px] h-[200px] rounded-xl" />
+            <div className="w-[300px] h-[200px] grid grid-cols-1 gap-4">
+              <Skeleton className="w-[300px] h-[40px] rounded-xl" />
+              <Skeleton className="w-[300px] h-[40px] rounded-xl" />
+              <Skeleton className="w-[300px] h-[40px] rounded-xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
 
 
   return (
     <div className="p-6 min-h-screen">
       <h1 className="text-4xl font-bold mb-4">Student Dashboard</h1>
-      <div className="grid grid-cols-1 gap-4">
+      <div className="flex flex-1 flex-col gap-4 p-4">
         <p>Welcome, {user['first_name']} {user['last_name']}</p>
-        {classes && classes.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {classes.map((classData) => (
-              <ClassCard classData={classData}  />
-          ))}
-          <div>
+        <div className="grid auto-rows-min grid-cols-1 md:grid-cols-3 gap-4">
+        {classes.map((classData) => (
+          <ClassCard classData={classData}  />
+        ))}
+        <div>
             <Link href="/classes/all" className="w-full h-2/3 flex items-center justify-center rounded-xl">
               <p className="text-center text-gray-500">View All Classes...</p>
             </Link>
           </div>
-        </div>
-        )}
-        <Card>
+        <Card className="col-span-1 md:col-span-2">
           <CardHeader>
             <CardTitle>Quick Links</CardTitle>
           </CardHeader>
@@ -94,6 +112,8 @@ const StudentDash = () => {
             </ul>
           </CardContent>
         </Card>
+
+        </div>
       </div>
     </div>
   );

@@ -129,9 +129,9 @@ export default function ClassDetails() {
           <div className="flex items-center justify-center h-screen">loading</div>
       )
       : (
-      <div className="container mx-auto p-8 flex flex-col space-y-8">
+      <div className="p-8 flex flex-col space-y-8">
         <h1 className="text-3xl font-bold mb-6">Class Details</h1>
-        <Card className="w-full">
+        <Card className="w-2/3">
           <CardHeader className="w-[400px]">
             <CardTitle className="@[250px]/card:text-4xl text-2xl font-semibold tabular-nums">{classDetails.class_name}</CardTitle>
             <Separator />
@@ -158,7 +158,7 @@ export default function ClassDetails() {
           </CardContent>
         </Card>
         <h1 className="text-3xl font-bold mb-6">Upcoming Assignments</h1>
-        <Card className="w-full">
+        <Card className="w-2/3">
           <CardHeader className="w-[400px]">
             <CardTitle className="@[250px]/card:text-4xl text-2xl font-semibold tabular-nums">Assignments</CardTitle>
             <Separator />

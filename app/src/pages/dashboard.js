@@ -4,7 +4,8 @@ import { jwtDecode } from 'jwt-decode'
 import StudentDash from "@/components/StudentDash";
 import TeacherDash from "@/components/TeacherDash";
 import AdminDash from "@/components/AdminDash";
-import {Layout} from "@/app/layout";
+import {Layout, LayoutWithCalendar} from "@/app/layout";
+import { SideCalendar } from "@/components/sidebars/DashboardSidebar";
 
 export default function Dashboard() {
   const [role, setRole] = useState('');
@@ -25,14 +26,18 @@ export default function Dashboard() {
 
     fetchRole().then(() => console.log("Role set"));
   }, []);
+  if (role === 'Admin') {
+    return (
+      <Layout>
+        <AdminDash />
+      </Layout>
+    );
+  }
 
   return (
-    <div>
-      <Layout>
-        {role === 'Student' && <StudentDash />}
-        {role === 'Teacher' && <TeacherDash />}
-        {role === 'Admin' && <AdminDash />}
-      </Layout>
-    </div>
+    <LayoutWithCalendar>
+      {role === 'Student' && <StudentDash />}
+      {role === 'Teacher' && <TeacherDash />}
+    </LayoutWithCalendar>
   );
 }

@@ -1,9 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/sidebars/app-sidebar"
 import React from "react";
 import {Separator} from "@/components/ui/separator";
+import { DashboardSidebar } from "@/components/sidebars/DashboardSidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,8 +37,8 @@ export function Layout({ children, title }) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
-        <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
+      <SidebarInset>
+        <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background border-b">
           <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
             <SidebarTrigger />
             <Separator
@@ -48,7 +49,29 @@ export function Layout({ children, title }) {
           </div>
         </header>
         {children}
-      </main>
+      </SidebarInset>
+    </SidebarProvider>
+  )
+}
+
+export function LayoutWithCalendar({ children, title }) {
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background border-b">
+          <div className="flex items-center gap-1 px-4 lg:gap-2 lg:px-6">
+            <SidebarTrigger />
+            <Separator
+              orientation="vertical"
+              className="mx-2 data-[orientation=vertical]:h-4"
+            />
+            <h1 className="text-base font-medium">{title}</h1>
+          </div>
+        </header>
+        {children}
+      </SidebarInset>
+      <DashboardSidebar />
     </SidebarProvider>
   )
 }

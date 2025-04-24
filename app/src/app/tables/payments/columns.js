@@ -12,6 +12,7 @@ import {
 import Link from "next/link"
 import { PaymentModifySheet } from "@/app/sheets/payment-sheet"
 import { SheetTrigger } from "@/components/ui/sheet"
+import { deletePayment } from "@/components/api"
 
 
 export const columns = [
@@ -123,7 +124,14 @@ export const columns = [
                             <SheetTrigger>Modify Donation</SheetTrigger>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => 
-                            console.log("Delete donation", classData)
+                            deletePayment(paymentData.id)
+                            .then(() => {
+                                console.log("Payment deleted successfully");
+                                window.location.reload();
+                            })
+                            .catch((error) => {
+                                console.error("Error deleting payment:", error);
+                            } )
                         }>
                             Delete Donation
                         </DropdownMenuItem>

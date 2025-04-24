@@ -9,7 +9,7 @@ const ClassCard = ({ classData }) => {
     console.log(classData);
 
     return (
-        <Card className="w-[300px] h-[200px] flex flex-col">
+        <Card className="col-span-1 w-[300px] h-[200px] flex flex-col">
             <CardHeader>
                 <div className="w-full flex justify-between">
                     <div className="text-left">

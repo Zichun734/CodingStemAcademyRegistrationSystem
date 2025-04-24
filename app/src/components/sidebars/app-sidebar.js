@@ -20,20 +20,6 @@ import {NavClasses} from "@/components/nav-classes";
 import axios from "axios";
 import config from "@/config";
 import NavSecondary from "@/components/nav-secondary";
-import {
-  Sheet, SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
-} from "@/components/ui/sheet";
-import {Label} from "@/components/ui/label";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-
-
 
 
 export function AppSidebar({ ...props }) {
@@ -114,7 +100,7 @@ export function AppSidebar({ ...props }) {
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Coding Stem Academy</span>
+                  <span className="truncate font-semibold">Stem Action Teen Institution</span>
                 </div>
               </a>
             </SidebarMenuButton>

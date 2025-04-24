@@ -2,6 +2,36 @@ import axios from 'axios';
 import config from "@/config";
 
 
+export const getAssignmentsForWeek = async (student_id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/assignments/student-week`, {
+            params: {
+                student_id: student_id
+            }
+        });
+        console.log(res.data);
+        return res.data['assignments'];
+    }
+    catch (error) {
+        console.error("Error fetching assignments for week:", error);
+    }
+}
+
+export const getAssignmentsForWeekTeacher = async (teacher_id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/assignments/teacher-week`, {
+            params: {
+                teacher_id: teacher_id
+            }
+        });
+        console.log(res.data);
+        return res.data['assignments'];
+    }
+    catch (error) {
+        console.error("Error fetching assignments for week:", error);
+    }
+}
+
 export const getCurrentSemester = async () => {
     try {
         const res = await axios.get(`${config.backendUrl}/current-semester`);
@@ -37,5 +67,16 @@ export const deleteClass = async (class_id) => {
     }
     catch (error) {
         console.error("Error deleting class:", error);
+    }
+}
+
+export const deletePayment = async (payment_id) => {
+    try {
+        console.log("Deleting payment...", payment_id);
+        const response = await axios.delete(`${config.backendUrl}/payment`, {params: {payment_id: payment_id}});
+        console.log(response.data);
+    }
+    catch (error) {
+        console.error("Error deleting payment:", error);
     }
 }

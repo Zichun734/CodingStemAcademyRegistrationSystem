@@ -16,3 +16,48 @@ def get_payments():
         db.close()
         cursor.close()
     return jsonify({'message': 'Payments retrieved', 'payments': payments})
+
+# POST functions
+@payments_bp.route('/payments', methods=['POST'])
+def create_payment():
+    db = get_db_connection()
+    data = request.get_json()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "INSERT INTO payments (amount, notes, payment_date, payment_type, status, student_id) VALUES (%s, %s, %s)"
+        cursor.execute(sql, (data['amount'], data['notes'], data['payment_date'], data['payment_type'], data['status'], data['student_id']))
+        db.commit()
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({'message': 'Payment created'})
+
+# PUT function
+@payments_bp.route('/payment', methods=['PUT'])
+def update_payment():
+    db = get_db_connection()
+    data = request.get_json()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "UPDATE payments SET amount = %s, notes = %s, payment_date = %s, payment_type = %s, status = %s WHERE id = %s"
+        cursor.execute(sql, (data['amount'], data['notes'], data['payment_date'], data['payment_type'], data['status'], data['id']))
+        db.commit()
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({'message': 'Payment updated'})
+
+# DELETE function
+@payments_bp.route('/payment', methods=['DELETE'])
+def delete_payment():
+    db = get_db_connection()
+    id = request.args.get('payment_id')
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "DELETE FROM payments WHERE id = %s"
+        cursor.execute(sql, (id,))
+        db.commit()
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({'message': 'Payment deleted'})

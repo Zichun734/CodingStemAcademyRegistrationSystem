@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectItem, SelectGroup, SelectContent, SelectValue } from '@/components/ui/select';
-
+import axios from 'axios';
+import config from "@/config";
 
 const paymentSchema = z.object({
     student_id: z.number().int(),
@@ -25,6 +26,7 @@ export function ModifyPaymentForm({ children, paymentData }) {
     const form = useForm({
         resoslver: zodResolver(paymentSchema),
         defaultValues: {
+            id: paymentData.id || "",
             student_id: paymentData.student_id || "",
             amount: paymentData.amount || "",
             status: paymentData.status || "",
@@ -37,8 +39,9 @@ export function ModifyPaymentForm({ children, paymentData }) {
     const onSubmit = async (data) => {
         console.log(data)
         try {
-            const response = await axios.put(`${config.apiUrl}/payments`, data)
+            const response = await axios.put(`${config.backendUrl}/payment`, data)
             console.log(response.data)
+            window.location.reload()
         } catch (error) {
             console.error(error)
         }

@@ -84,7 +84,7 @@ export default function Donations() {
     
     return (
         <Layout>
-            <div className="container mx-auto p-12">
+            <div className="container p-12">
               { user['role'] === 'Admin' ? (
                 <div>
                     <Label className="flex flex-row">

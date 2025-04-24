@@ -88,7 +88,7 @@ export default function Assignments() {
             </Link>
           )}
         </div>
-        <div className="w-full overflow-hidden rounded-md border">
+        <div className="w-[600px] overflow-hidden rounded-md border">
           <Table className="w-[600px]">
             <TableCaption>All Assignments for this class.</TableCaption>
             <TableHeader>
