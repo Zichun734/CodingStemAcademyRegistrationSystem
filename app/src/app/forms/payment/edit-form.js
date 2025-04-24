@@ -29,7 +29,7 @@ export function ModifyPaymentForm({ children, paymentData }) {
             amount: paymentData.amount || "",
             status: paymentData.status || "",
             notes: paymentData.notes || "",
-            payment_date: new Date(paymentData.payment_date) || "",
+            payment_date: new Date(paymentData.payment_date).toISOString().split("T")[0] || "",
             payment_type: paymentData.payment_type || ""
         }
     })

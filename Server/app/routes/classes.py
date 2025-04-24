@@ -77,7 +77,6 @@ def get_classes_by_teacher():
         cursor.execute(sql, val)
         res = cursor.fetchall()
         for classData in res:
-            print(classData)
             if 'start_time' in classData and isinstance(classData['start_time'], timedelta):
                 classData['start_time'] = format_time(classData['start_time'])
             if 'end_time' in classData and isinstance(classData['end_time'], timedelta):
@@ -108,6 +107,54 @@ def get_class(id):
         cursor.close()
     return jsonify({'message': 'Class retrieved', 'class': res})
 
+@classes_bp.route('/student-classes-by-semester', methods=['GET'])
+def get_student_classes_by_semester():
+    db = get_db_connection()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "SELECT * FROM class_students WHERE user_id = %s"
+        semester_id = request.args.get('semester_id')
+        student_id = request.args.get('student_id')
+        val = (student_id, )
+        cursor.execute(sql, val)
+        res = cursor.fetchall()
+        classes = []
+        for row in res:
+            sql = "SELECT * FROM classes WHERE id = %s"
+            val = (row['class_id'], )
+            cursor.execute(sql, val)
+            class_info = cursor.fetchone()
+            if class_info:
+                classes.append(class_info)
+                if 'start_time' in class_info and isinstance(class_info['start_time'], timedelta):
+                    class_info['start_time'] = format_time(class_info['start_time'])
+                if 'end_time' in class_info and isinstance(class_info['end_time'], timedelta):
+                    class_info['end_time'] = format_time(class_info['end_time'])
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({'message': 'Classes retrieved', 'classes': classes})
+
+@classes_bp.route('/teacher-classes-by-semester')
+def get_teachers_classes_by_semesters():
+    db = get_db_connection()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "SELECT * FROM classes WHERE teacher_id = %s and semester_id = %s"
+        semester_id = request.args.get('semester_id')
+        teacher_id = request.args.get('teacher_id')
+        val = (teacher_id, semester_id)
+        cursor.execute(sql, val)
+        res = cursor.fetchall()
+        for classData in res:
+            if 'start_time' in classData and isinstance(classData['start_time'], timedelta):
+                classData['start_time'] = format_time(classData['start_time'])
+            if 'end_time' in classData and isinstance(classData['end_time'], timedelta):
+                classData['end_time'] = format_time(classData['end_time'])
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({'message': 'Classes retrieved', 'classes': res})
 
 # POST functions
 
