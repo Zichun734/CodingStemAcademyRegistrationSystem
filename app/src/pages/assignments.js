@@ -4,6 +4,7 @@ import {jwtDecode} from "jwt-decode";
 import { DataTable } from '@/app/tables/assignments/student/data-table';
 import { columns } from '@/app/tables/assignments/student/columns';
 import { getAssignmentsForStudent } from '@/components/api';
+import { getAssignmentsForTeacher } from '@/components/api';
 
 
 export default function Assignments() {
@@ -22,6 +23,14 @@ export default function Assignments() {
   useEffect(() => {
     if (user && user['role'] === 'Student') {
       getAssignmentsForStudent(user['id'])
+        .then((data) => {
+          setAssignments(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching assignments:", error);
+        });
+    } else if (user && user['role'] === 'Teacher') {
+      getAssignmentsForTeacher(user['id'])
         .then((data) => {
           setAssignments(data);
         })

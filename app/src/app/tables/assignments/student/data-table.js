@@ -18,15 +18,30 @@ import {
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
- 
+import { useMemo } from "react"
 
 export function  DataTable({children, columns, data}) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
-  const [activeRole, setActiveRole] = useState(null);
+  const [activeClass, setActiveClass] = useState(null);
+  const [activeTeacher, setActiveTeacher] = useState(null);
+
+  const filteredData = useMemo(() => {
+    let filtered = data;
+
+    if (activeClass) {
+      filtered = filtered.filter((row) => row.class_name === activeClass);
+    }
+
+    if (activeTeacher) {
+      filtered = filtered.filter((row) => row.teacher_name === activeTeacher);
+    }
+
+    return filtered;
+  }, [data, activeClass, activeTeacher]);
 
   const table = useReactTable({
-      data,
+      data: filteredData,
       columns,
       getCoreRowModel: getCoreRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
@@ -42,31 +57,53 @@ export function  DataTable({children, columns, data}) {
   
     return (
       <div>
-        <div className="flex items-center py-4 space-x-2">
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Class" />
-            </SelectTrigger>
-            <SelectContent>
-              {[...new Set(data.map((row) => (row.class_name)))].map((className) => (
-                <SelectItem key={className} value={className}>
-                  {className}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Teacher" />
-            </SelectTrigger>
-            <SelectContent>
-              {[...new Set(data.map((row) => (row.teacher_name)))].map((teacherName) => (
-                <SelectItem key={teacherName} value={teacherName}>
-                  {teacherName}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex items-center py-4 space-x-2">
+            <Select 
+              value={activeClass}
+              onValueChange={(value) => {
+                setActiveClass(value);
+              }}>
+              <SelectTrigger>
+                <SelectValue placeholder="Class">
+                  {activeClass || "Class"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {[...new Set(data.map((row) => (row.class_name)))].map((className) => (
+                  <SelectItem key={className} value={className}>
+                    {className}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={activeTeacher}
+              onValueChange={(value) => {
+                setActiveTeacher(value);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Teacher">
+                  {activeTeacher ? activeTeacher : "Teacher"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {[...new Set(data.map((row) => (row.teacher_name)))].map((teacherName) => (
+                  <SelectItem key={teacherName} value={teacherName}>
+                    {teacherName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <Button className="ml-2" variant="default" size="sm" 
+            onClick={() => {
+              setActiveClass(null);
+              setActiveTeacher(null);
+            }}>
+            Clear Filters
+          </Button>
         </div>
         <div className="rounded-md border">
           <Table>

@@ -32,6 +32,21 @@ export const getStudentByName = async (first_name, last_name) => {
     }
 }
 
+export const getAllClassesForTeacher = async (id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/all-classes-by-teacher`, {
+            params: {
+                teacher_id: id
+            }
+        });
+        console.log(res.data);
+        return res.data['classes'];
+    }
+    catch (error) {
+        console.error("Error fetching all classes:", error);
+    }
+};
+
 export const getAssignmentsForStudent = async (student_id) => {
     try {
         const res = await axios.get(`${config.backendUrl}/assignments/student`, {
@@ -60,6 +75,21 @@ export const getAssignmentsForWeek = async (student_id) => {
     }
     catch (error) {
         console.error("Error fetching assignments for week:", error);
+    }
+}
+
+export const getAssignmentsForTeacher = async (teacher_id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/assignments/teacher`, {
+            params: {
+                teacher_id: teacher_id
+            }
+        });
+        console.log(res.data);
+        return res.data['assignments'];
+    }
+    catch (error) {
+        console.error("Error fetching assignments for teacher:", error);
     }
 }
 

@@ -4,6 +4,7 @@ import {jwtDecode} from "jwt-decode";
 import { Separator } from '@/components/ui/separator';
 import { getAllClassesForStudent, getSemester, getUser } from '@/components/api';
 import ClassCard from '@/components/dashboard/class-cards';
+import { getAllClassesForTeacher } from '@/components/api';
 
 
 export default function Classes() {
@@ -17,7 +18,7 @@ export default function Classes() {
     }, []);
 
     useEffect(() => {
-        if (user) {
+        if (user && user['role'] === 'Student') {
             getAllClassesForStudent(user['id'])
                 .then((classes) => {
                     Promise.all(
@@ -47,6 +48,35 @@ export default function Classes() {
                 .catch((error) => {
                     console.error("Error fetching classes:", error);
                 });
+        } else if (user && user['role'] === 'Teacher') {
+            getAllClassesForTeacher(user['id'])
+            .then((classes) => {
+                Promise.all(
+                    classes.map(async (classData) => {
+                        try {
+                            const semester = await getSemester(classData.semester_id);
+                            const teacher = await getUser(classData.teacher_id);
+                            return { ...classData, semester: semester.name, teacher: teacher }; 
+                        } catch (error) {
+                            console.error("Error fetching semester:", error);
+                            return classData; 
+                        }
+                    })
+                ).then((updatedClasses) => {
+                    const tempClasses = [];
+                    for (const cur of updatedClasses) {
+                        if (tempClasses.length < 1 || tempClasses.at(-1).at(-1)['semester'] !== cur['semester']) {
+                            tempClasses.push([cur]);
+                        } else if (tempClasses.at(-1).at(-1)['semester'] === cur['semester']) {
+                            tempClasses.at(-1).push(cur);
+                        }
+                    }
+                    console.log("Updated Classes: ", tempClasses);
+                    setClasses(tempClasses);
+                });
+            }).then((error) => {
+                console.error("Error fetching classes:", error);
+            });
         }
     }, [user]);
 

@@ -92,7 +92,7 @@ def get_assignments_by_student_and_week():
     sorted_assignments = sorted(assignments, key=lambda x: x['due_date'])
     return jsonify({"message": "Assignments retrieved", "assignments": sorted_assignments})
 
-@assignments_bp.route('/assignments/student', methods=['GEt'])
+@assignments_bp.route('/assignments/student', methods=['GET'])
 def get_assignments_by_student():
     student_id = request.args.get('student_id')
     try:
@@ -149,6 +149,41 @@ def get_assignments_by_teacher_and_week():
             classInfo = cursor.fetchone()
             print(classInfo)
             for assignment in assignments_for_class:
+                assignment["class_id"] = id
+                assignment["class_name"] = classInfo['class_name']
+                assignments.append(assignment)
+    finally:
+        cursor.close()
+        db.close()
+    sorted_assignments = sorted(assignments, key=lambda x: x['due_date'])
+    return jsonify({"message": "Assignments retrieved", "assignments": sorted_assignments})
+
+@assignments_bp.route('/assignments/teacher', methods=['GET'])
+def get_assignments_by_teacher():
+    teacher_id = request.args.get('teacher_id')
+    try:
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+        sql = "SELECT * FROM classes WHERE teacher_id = %s"
+        cursor.execute(sql, (teacher_id,))
+        class_ids = cursor.fetchall()
+        if not class_ids:
+            return jsonify({"message": "No classes found for this teacher", "assignments": []})
+        assignments = []
+        for classData in class_ids:
+            id = classData['id']
+            sql = "SELECT * FROM assignments WHERE class_id = %s AND due_date >= CURDATE() ORDER BY due_date ASC"
+            cursor.execute(sql, (id,))
+            assignments_for_class = cursor.fetchall()
+            sql = "SELECT * FROM classes WHERE id = %s"
+            cursor.execute(sql, (id, ))
+            classInfo = cursor.fetchone()
+            sql = "SELECT * FROM users WHERE id = %s"
+            cursor.execute(sql, (teacher_id, ))
+            teacherInfo = cursor.fetchone()
+            for assignment in assignments_for_class:
+                assignment["teacher_name"] = teacherInfo['first_name']
+                assignment["teacher_gender"] = teacherInfo['gender']
                 assignment["class_id"] = id
                 assignment["class_name"] = classInfo['class_name']
                 assignments.append(assignment)
