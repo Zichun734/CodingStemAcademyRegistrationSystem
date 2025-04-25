@@ -23,7 +23,7 @@ def get_users():
 def get_user_by_name():
     first_name = request.args.get('first_name')
     last_name = request.args.get('last_name')
-    db = get_db_connection()
+    my_db = get_db_connection()
     try:
         cursor = my_db.cursor(dictionary=True)
         sql = "SELECT * FROM users WHERE first_name = %s AND last_name = %s"
@@ -49,6 +49,19 @@ def get_user_by_id():
         db.close()
         cursor.close()
     return jsonify({"message": "User retrieved", "user": user})
+
+@users_bp.route('/students', methods=['GET'])
+def get_students():
+    db = get_db_connection()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "SELECT * FROM users WHERE role = 'Student'"
+        cursor.execute(sql)
+        students = cursor.fetchall()
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({"message": "Retrieved All Students", "students": students})
 
 @users_bp.route('/teachers', methods=['GET'])
 def get_teachers():

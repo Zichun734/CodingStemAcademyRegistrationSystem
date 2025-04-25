@@ -130,7 +130,7 @@ export default function CreateClass() {
                 Loading...
             </div>
         ): (
-        <div className="container mx-auto p-8 w-[400px]">
+        <div className="container p-8 w-[400px]">
         <h1 className="text-2xl font-bold mb-6">New class for {teacher.first_name} {teacher.last_name}</h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">

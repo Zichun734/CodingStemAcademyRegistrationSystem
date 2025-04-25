@@ -9,7 +9,7 @@ def get_payments():
     db = get_db_connection()
     try:
         cursor = db.cursor(dictionary=True)
-        sql = "SELECT * FROM payments"
+        sql = "SELECT * FROM payments ORDER BY payment_date DESC"
         cursor.execute(sql)
         payments = cursor.fetchall()
     finally:
@@ -18,13 +18,13 @@ def get_payments():
     return jsonify({'message': 'Payments retrieved', 'payments': payments})
 
 # POST functions
-@payments_bp.route('/payments', methods=['POST'])
+@payments_bp.route('/payment', methods=['POST'])
 def create_payment():
     db = get_db_connection()
     data = request.get_json()
     try:
         cursor = db.cursor(dictionary=True)
-        sql = "INSERT INTO payments (amount, notes, payment_date, payment_type, status, student_id) VALUES (%s, %s, %s)"
+        sql = "INSERT INTO payments (amount, notes, payment_date, payment_type, status, student_id) VALUES (%s, %s, %s, %s, %s, %s)"
         cursor.execute(sql, (data['amount'], data['notes'], data['payment_date'], data['payment_type'], data['status'], data['student_id']))
         db.commit()
     finally:

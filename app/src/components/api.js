@@ -16,6 +16,22 @@ export const getUser = async (id) => {
     }
 }
 
+export const getStudentByName = async (first_name, last_name) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/users/by-name`, {
+            params: {
+                first_name: first_name,
+                last_name: last_name
+            }
+        });
+        console.log(res.data);
+        return res.data['student'];
+    }
+    catch (error) {
+        console.error("Error fetching student by name:", error);
+    }
+}
+
 export const getAssignmentsForStudent = async (student_id) => {
     try {
         const res = await axios.get(`${config.backendUrl}/assignments/student`, {
