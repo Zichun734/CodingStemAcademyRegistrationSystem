@@ -17,7 +17,7 @@ const AdminDash = () => {
   if (!user) {
     return (
       <div className="p-6 min-h-screen">
-        <h1 className="text-4xl font-bold mb-4">Teacher Dashboard</h1>
+        <h1 className="text-4xl font-bold mb-4">Admin Dashboard</h1>
         <div className="grid grid-cols-1 gap-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Skeleton className="w-[300px] h-[200px] rounded-xl" />
@@ -50,7 +50,7 @@ const AdminDash = () => {
               <CardContent>
                 <ul className="grid grid-cols-1 md:grid-cols-2 space-y-2">
                   <Link href="/admin/classes">Manage classes</Link>
-                  <Link href="/admin/assignments">Manage Assignments</Link>
+                  <Link href="/admin/semesters">Manage semesters</Link>
                   <Link href="/calendar">View Calendar</Link>
                   <Link href="/admin/grades">View Grades</Link>
                   <Link href="/admin/payments">Manage Payments</Link>

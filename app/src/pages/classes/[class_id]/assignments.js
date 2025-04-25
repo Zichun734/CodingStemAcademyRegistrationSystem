@@ -79,7 +79,7 @@ export default function Assignments() {
 
   return (
     <Layout title={"Assignments"}>
-      <div className="flex flex-1 flex-col gap-4 p-4">
+      <div className="container w-[700px] flex flex-1 flex-col gap-4 p-8">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Assignments</h1>
           {user && user.role === "Teacher" && (
@@ -88,8 +88,8 @@ export default function Assignments() {
             </Link>
           )}
         </div>
-        <div className="w-[600px] overflow-hidden rounded-md border">
-          <Table className="w-[600px]">
+        <div className="overflow-hidden rounded-md border">
+          <Table className="">
             <TableCaption>All Assignments for this class.</TableCaption>
             <TableHeader>
               <TableRow>

@@ -1,5 +1,5 @@
 "use client"
-import { MoreHorizontal } from "lucide-react" 
+import { MoreHorizontal, Trash } from "lucide-react" 
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -24,43 +24,51 @@ export const columns = [
         }
     },
     {
-        accessorKey: "subject",
+        accessorKey: "title",
         header: ({ column }) => {
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    <span>Subject</span>
+                    <span>Title</span>
                 </Button>
             )
         }
     },
     {
-        accessorKey: "student_count",
-        header: "Students",
+        accessorKey: "due_date",
+        header: ({ column }) => {
+            return (
+                <Button className="" variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    <span>Due Date</span>
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const date = new Date(row.original.due_date);
+            return date.toLocaleString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+            });
+        },
     },
     {
-        accessorKey: "day",
+        accessorKey: "teacher_name",
         header: ({ column }) => {
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    <span>Day</span>
+                    <span>Teacher</span>
                 </Button>
             )
+        }, 
+        cell: ({ row }) => {
+            const data = row.original;
+            return data['teacher_gender'] === 'Male' ? "Mr. " + data['teacher_name'] : "Ms. " + data['teacher_name'];
         }
-    },
-    {
-        accessorKey: "start_time",
-        header: "Start Time",
-    },
-    {
-        accessorKey: "end_time",
-        header: "End Time",
     },
     {
     id: "actions",
     cell: ({ row }) => {
-        const classData = row.original;
-        console.log(classData);
-        console.log(classData['students']);
+        const assignmentData = row.original;
         return (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -73,12 +81,9 @@ export const columns = [
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                        <Link href={`/admin/classes/${classData['id']}`}>
-                            Manage Class
+                        <Link href={`/classes/${assignmentData['class_id']}/assignments/${assignmentData['id']}`}>
+                            View Assignment
                         </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        Remove from class
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

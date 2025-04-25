@@ -101,7 +101,7 @@ const TeacherDash = () => {
               <ClassCard classData={classData}  />
           ))}
           <div>
-            <Link href="/classes/all" className="w-full h-2/3 flex items-center justify-center rounded-xl">
+            <Link href="/classes" className="w-full h-2/3 flex items-center justify-center rounded-xl">
               <p className="text-center text-gray-500">View All Classes...</p>
             </Link>
           </div>

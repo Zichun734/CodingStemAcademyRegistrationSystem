@@ -84,7 +84,7 @@ const ClassPage = () => {
 
   return (
     <Layout>
-        <div className="w-[600px] container mx-auto p-8 flex flex-col space-y-4">
+        <div className="w-[600px] container p-8 flex flex-col space-y-4">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold mb-4">Assignment Details</h1>
             {user && user.role === "Student" && (

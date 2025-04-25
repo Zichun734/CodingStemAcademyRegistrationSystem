@@ -1,6 +1,36 @@
 import axios from 'axios';
 import config from "@/config";
 
+export const getUser = async (id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/user`, {
+            params: {
+                id: id
+            }
+        });
+        console.log(res.data);
+        return res.data['user'];
+    }
+    catch (error) {
+        console.error("Error fetching user:", error);
+    }
+}
+
+export const getAssignmentsForStudent = async (student_id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/assignments/student`, {
+            params: {
+                student_id: student_id
+            }
+        });
+        console.log(res.data);
+        return res.data['assignments'];
+    }
+    catch (error) {
+        console.error("Error fetching assignments for student:", error);
+    }
+}
+
 
 export const getAssignmentsForWeek = async (student_id) => {
     try {
@@ -29,6 +59,36 @@ export const getAssignmentsForWeekTeacher = async (teacher_id) => {
     }
     catch (error) {
         console.error("Error fetching assignments for week:", error);
+    }
+}
+
+export const getAllClassesForStudent = async (id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/all-classes-by-student`, {
+            params: {
+                student_id: id
+            }
+        });
+        console.log(res.data);
+        return res.data['classes'];
+    }
+    catch (error) {
+        console.error("Error fetching all classes:", error);
+    }
+}
+
+export const getSemester = async (id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/semester`, {
+            params: {
+                id: id
+            }
+        });
+        console.log(res.data);
+        return res.data['semester'];
+    }
+    catch (error) {
+        console.error("Error fetching semester:", error);
     }
 }
 

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import Link from "next/link"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
  
 
 export function  DataTable({children, columns, data}) {
@@ -41,7 +41,33 @@ export function  DataTable({children, columns, data}) {
     });
   
     return (
-      <div className="py-4">
+      <div>
+        <div className="flex items-center py-4 space-x-2">
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Class" />
+            </SelectTrigger>
+            <SelectContent>
+              {[...new Set(data.map((row) => (row.class_name)))].map((className) => (
+                <SelectItem key={className} value={className}>
+                  {className}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Teacher" />
+            </SelectTrigger>
+            <SelectContent>
+              {[...new Set(data.map((row) => (row.teacher_name)))].map((teacherName) => (
+                <SelectItem key={teacherName} value={teacherName}>
+                  {teacherName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="rounded-md border">
           <Table>
             <TableHeader>
@@ -89,9 +115,7 @@ export function  DataTable({children, columns, data}) {
           </Table>
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
-          <Button size="sm" asChild>
-              <Link href="/admin/payments/create">Create Donation</Link>
-          </Button>
+          {children}
           <span className="text-sm">
             Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
           </span>

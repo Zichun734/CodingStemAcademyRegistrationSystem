@@ -43,22 +43,20 @@ def get_all_classes_by_student():
         student_classes = cursor.fetchall()
         classes = []
         for row in student_classes:
-            if row['class_id'] not in classes:
-                sql = "SELECT * FROM classes WHERE id = %s"
-                val = (row['class_id'], )
-                cursor.execute(sql, val)
-                class_info = cursor.fetchone()
-                class_info['student_id'] = user_id
-                
-                # Convert timedelta fields (if any) to strings
-                if 'start_time' in class_info and isinstance(class_info['start_time'], timedelta):
-                    class_info['start_time'] = format_time(class_info['start_time'])
-                if 'end_time' in class_info and isinstance(class_info['end_time'], timedelta):
-                    class_info['end_time'] = format_time(class_info['end_time'])
+            sql = "SELECT * FROM classes WHERE id = %s"
+            val = (row['class_id'], )
+            cursor.execute(sql, val)
+            class_info = cursor.fetchone()
+            class_info['student_id'] = user_id
+            
+            # Convert timedelta fields (if any) to strings
+            if 'start_time' in class_info and isinstance(class_info['start_time'], timedelta):
+                class_info['start_time'] = format_time(class_info['start_time'])
+            if 'end_time' in class_info and isinstance(class_info['end_time'], timedelta):
+                class_info['end_time'] = format_time(class_info['end_time'])
 
-                
-                if class_info:
-                    classes.append(class_info)
+            if class_info:
+                classes.append(class_info)
     finally:
         db.close()
         cursor.close()
@@ -120,8 +118,8 @@ def get_student_classes_by_semester():
         res = cursor.fetchall()
         classes = []
         for row in res:
-            sql = "SELECT * FROM classes WHERE id = %s"
-            val = (row['class_id'], )
+            sql = "SELECT * FROM classes WHERE id = %s and semester_id = %s"
+            val = (row['class_id'], semester_id )
             cursor.execute(sql, val)
             class_info = cursor.fetchone()
             if class_info:

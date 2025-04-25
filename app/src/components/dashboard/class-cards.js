@@ -9,11 +9,11 @@ const ClassCard = ({ classData }) => {
     console.log(classData);
 
     return (
-        <Card className="col-span-1 w-[300px] h-[200px] flex flex-col">
+        <Card className="col-span-1 flex-1 flex flex-col">
             <CardHeader>
-                <div className="w-full flex justify-between">
+                <div className="w-full flex flex-1 justify-between">
                     <div className="text-left">
-                        <CardTitle className="h-[20px] w-full truncate">{classData.class_name}</CardTitle>
+                        <CardTitle className="h-[20px] w-[100px] truncate">{classData.class_name}</CardTitle>
                         <Label className="text-xs">{classData.subject}</Label>
                         <Label className="text-xs">
                             {classData.teacher.gender === 'Male' ? 'Mr.' : 'Ms.'} {classData.teacher['first_name']}
@@ -34,13 +34,15 @@ const ClassCard = ({ classData }) => {
             </CardHeader>
             <Separator />
             <CardContent className="w-full py-3 flex flex-row justify-evenly items-center">
-                <Link href={`/classes/${classData.id}`} className="text-center px-7">
+                <Link href={`/classes/${classData.id}`} className="text-center">
                     <BookCopy className="w-[25px] h-[25px]" />
                 </Link>
-                <Link href={`/classes/${classData.id}/assignments`} className="text-center px-7 border-r border-l">
+                <Separator orientation="vertical" className="h-[25px]" />
+                <Link href={`/classes/${classData.id}/assignments`} className="text-center">
                     <NotepadText className="w-[25px] h-[25px]" />
                 </Link>
-                <Link href={`/classes/${classData.id}/announcements`} className="text-center px-7">
+                <Separator orientation="vertical" className="h-[25px]" />
+                <Link href={`/classes/${classData.id}/announcements`} className="text-center">
                     <Megaphone className="w-[25px] h-[25px]" />
                 </Link>
             </CardContent>
