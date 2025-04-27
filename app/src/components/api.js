@@ -235,3 +235,14 @@ export const deletePayment = async (payment_id) => {
         console.error("Error deleting payment:", error);
     }
 }
+
+export const deleteSemester = async (semester_id) => {
+    try {
+        console.log("Deleting semester...", semester_id);
+        const response = await axios.delete(`${config.backendUrl}/semester`, {params: {semester_id: semester_id}});
+        console.log(response.data);
+    }
+    catch (error) {
+        console.error("Error deleting semester:", error);
+    }
+}

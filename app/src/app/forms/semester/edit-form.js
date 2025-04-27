@@ -9,6 +9,15 @@ import { Select, SelectTrigger, SelectItem, SelectGroup, SelectContent, SelectVa
 import { Input } from "@/components/ui/input";
 import { updateSemester } from "@/components/api";
 import { set } from "date-fns";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+  import { deleteSemester } from "@/components/api";
 
 const semesterSchema = z.object({
     name: z.string().min(1, "Semester name is required"),
@@ -137,11 +146,45 @@ export const ModifySemesterForm = ({ semester }) => {
                         </FormItem>
                     )}
                 />
-
-                <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Saving..." : "Save"}
-                </Button>
+                <div className="flex flex-row justify-between">
+                    <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? "Saving..." : "Save"}
+                    </Button>
+                    <DeleteSemesterDialog semester={semester} />
+                </div>
             </form>
         </Form>
+    );
+}
+
+const DeleteSemesterDialog = ({ semester }) => {
+    const [open, setOpen] = React.useState(false);
+
+    const handleDelete = async () => {
+        try {
+            await deleteSemester(semester.id);
+            window.location.reload();
+        } catch (error) {
+            console.error("Error deleting semester:", error);
+        }
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button variant="destructive">Delete</Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Are you sure?</DialogTitle>
+                    <DialogDescription>
+                        This action cannot be undone. This will permanently delete the semester.
+                    </DialogDescription>
+                </DialogHeader>
+                <Button variant="destructive" onClick={handleDelete}>
+                    Delete
+                </Button>
+            </DialogContent>
+        </Dialog>
     );
 }

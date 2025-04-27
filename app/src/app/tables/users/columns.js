@@ -75,7 +75,11 @@ export const columns = [
                                 Manage Student's Classes
                               </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>Manage Payments</DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link href={`payments/${user.id}`}>
+                                Manage Payments
+                              </Link>
+                            </DropdownMenuItem>
                           </div>
                         ) : userRole === 'Teacher' ? (
                           <div>
