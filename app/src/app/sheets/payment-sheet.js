@@ -1,9 +1,4 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import React from "react"
-import axios from "axios"
-import config from "@/config"
 import {
   Sheet,
   SheetClose,
@@ -13,16 +8,11 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { ClassForm } from "@/app/forms/class/edit-form"
 import { ModifyPaymentForm } from "../forms/payment/edit-form"
 
 
 
 export function PaymentModifySheet({children, paymentData}) {
-    
-    React.useEffect(() => {
-    }, []);
-
 
   return (
     <Sheet>

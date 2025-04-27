@@ -31,6 +31,47 @@ def get_classes():
         my_db.close()
     return jsonify({'message': 'All classes retrieved', 'classes': res})
 
+@classes_bp.route('/classes/semester', methods=['GET'])
+def get_classes_by_semester():
+    my_db = get_db_connection()
+    try:
+        cursor = my_db.cursor(dictionary=True)
+        semester_id = request.args.get('semester_id')
+        sql = "SELECT * FROM classes WHERE semester_id = %s"
+        val = (semester_id, )
+        cursor.execute(sql, val)
+        res = cursor.fetchall()
+        for classData in res:
+            if 'start_time' in classData and isinstance(classData['start_time'], timedelta):
+                classData['start_time'] = format_time(classData['start_time'])
+            if 'end_time' in classData and isinstance(classData['end_time'], timedelta):
+                classData['end_time'] = format_time(classData['end_time'])
+        temp_classes = []
+        for classData in res:
+            sql = "SELECT * FROM users WHERE id = %s"
+            val = (classData['teacher_id'], )
+            cursor.execute(sql, val)
+            teacher = cursor.fetchone()
+            classData['teacher_name'] = teacher['first_name'] + " " + teacher['last_name']
+            sql = "SELECT * FROM semesters WHERE id = %s"
+            val = (classData['semester_id'], )
+            cursor.execute(sql, val)
+            semester = cursor.fetchone()
+            classData['semester'] = semester['name']
+            sql = "SELECT count(*) as count FROM class_students WHERE class_id = %s"
+            val = (classData['id'], )
+            cursor.execute(sql, val)
+            count = cursor.fetchone()
+            classData['student_count'] = count['count']
+            temp_classes.append(classData)
+
+    finally:
+        cursor.close()
+        my_db.close()
+    if not temp_classes:
+        return jsonify({'message': 'No classes found for this semester', 'classes': []})
+    return jsonify({'message': 'Classes retrieved', 'classes': temp_classes })
+
 @classes_bp.route('/all-classes-by-student', methods=['GET'])
 def get_all_classes_by_student():
     db = get_db_connection()

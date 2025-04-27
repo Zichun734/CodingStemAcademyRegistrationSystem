@@ -32,6 +32,21 @@ export const getStudentByName = async (first_name, last_name) => {
     }
 }
 
+export const getClassesBySemester = async (semester_id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/classes/semester`, {
+            params: {
+                semester_id: semester_id
+            }
+        });
+        console.log(res.data);
+        return res.data['classes'];
+    }
+    catch (error) {
+        console.error("Error fetching classes by semester:", error);
+    }
+}
+
 export const getAllClassesForTeacher = async (id) => {
     try {
         const res = await axios.get(`${config.backendUrl}/all-classes-by-teacher`, {
@@ -108,6 +123,17 @@ export const getAssignmentsForWeekTeacher = async (teacher_id) => {
     }
 }
 
+export const getSemesters = async () => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/semesters`);
+        console.log(res.data);
+        return res.data['semesters'];
+    }
+    catch (error) {
+        console.error("Error fetching semesters:", error);
+    }
+}
+
 export const getAllClassesForStudent = async (id) => {
     try {
         const res = await axios.get(`${config.backendUrl}/all-classes-by-student`, {
@@ -146,6 +172,29 @@ export const getCurrentSemester = async () => {
     }
     catch (error) {
         console.error("Error fetching classes by semester:", error);
+    }
+}
+
+export const postSemester = async (semester) => {
+    try {
+        console.log("Creating semester...", semester);
+        const response = await axios.post(`${config.backendUrl}/semester`, semester);
+        console.log(response.data);
+    }
+    catch (error) {
+        console.error("Error creating semester:", error);
+    }
+}
+
+
+export const updateSemester = async (semester) => {
+    try {
+        console.log("Updating semester...", semester);
+        const response = await axios.put(`${config.backendUrl}/semester`, semester);
+        console.log(response.data);
+    }
+    catch (error) {
+        console.error("Error updating semester:", error);
     }
 }
 

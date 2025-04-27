@@ -50,3 +50,34 @@ def get_current_semester_route():
     if not semester:
         return jsonify({'message': 'No current semester found'}), 404
     return jsonify({'message': 'Current semester retrieved', 'semester': semester}), 200
+
+# POST functions
+@semesters_bp.route('/semester', methods=['POST'])
+def create_semester_route():
+    db = get_db_connection()
+    data = request.get_json()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "INSERT INTO semesters (name, start_date, end_date, status) VALUES (%s, %s, %s, %s)"
+        cursor.execute(sql, (data['name'], data['start_date'], data['end_date'], data['status']))
+        db.commit()
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({'message': 'Semester created successfully'}), 201
+
+
+# PUT functions
+@semesters_bp.route('/semester', methods=['PUT'])
+def update_semester_route():
+    db = get_db_connection()
+    data = request.get_json()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "UPDATE semesters SET name = %s, start_date = %s, end_date = %s, status = %s WHERE id = %s"
+        cursor.execute(sql, (data['name'], data['start_date'], data['end_date'], data['status'], data['id']))
+        db.commit()
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({'message': 'Semester updated successfully'}), 200

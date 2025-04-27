@@ -3,6 +3,9 @@ import {Layout} from "@/app/layout";
 import {jwtDecode} from "jwt-decode";
 import {useRouter} from "next/router";
 import {Label} from "@/components/ui/label";
+import {DataTable} from "@/app/tables/semesters/data-table";
+import { getSemesters } from '@/components/api';
+import { columns } from "@/app/tables/semesters/columns";
 
 
 export default function Semesters() {
@@ -24,6 +27,13 @@ export default function Semesters() {
   }, []);
 
   useEffect(() => {
+    
+    getSemesters().then((data) => {
+      console.log("Semesters data:", data);
+      setSemesters(data);
+    }).catch((error) => {
+      console.error("Error fetching semesters:", error);
+    });
   }, [user])
 
   return (
@@ -33,11 +43,7 @@ export default function Semesters() {
         <h1 className="text-3xl font-bold">Semesters</h1>
         <p className="text-gray-500">Manage Semesters in the system</p>
       </Label>
-      {loading ? (
-        <div className="flex items-center justify-center h-screen">
-          <h1 className="text-3xl font-bold">Loading...</h1>
-        </div>
-      ) : user['role'] === 'Admin' ? (
+      {user['role'] === 'Admin' ? (
         <DataTable columns={columns} data={semesters} />
       ) : (
         <div className="text-center">

@@ -45,6 +45,7 @@ export const columns = [
         cell: ({ row }) => {
             const date = new Date(row.original.due_date);
             return date.toLocaleString("en-US", {
+                timeZone: "UTC",
                 year: "numeric",
                 month: "short",
                 day: "numeric",

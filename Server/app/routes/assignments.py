@@ -184,7 +184,7 @@ def get_assignments_by_teacher():
             for assignment in assignments_for_class:
                 assignment["teacher_name"] = teacherInfo['first_name']
                 assignment["teacher_gender"] = teacherInfo['gender']
-                assignment["class_id"] = id
+                assignment["class_id"] = id5
                 assignment["class_name"] = classInfo['class_name']
                 assignments.append(assignment)
     finally:

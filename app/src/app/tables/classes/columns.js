@@ -38,11 +38,30 @@ export const columns = [
     },
     {
         accessorKey: "subject",
-        header: "Subject",
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    <span>Subject</span>
+                </Button>
+            )
+        }
     },
     {
         accessorKey: "student_count",
-        header: "Students",
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    <span>Student Count</span>
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            return (
+                <div className="text-center">
+                    {row.original.student_count}
+                </div>
+            )
+        }
     }, 
     {
         accessorKey: "day",

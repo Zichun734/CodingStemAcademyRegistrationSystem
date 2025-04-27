@@ -87,6 +87,7 @@ export const columns = [
         cell: ({ row }) => {
             const date = new Date(row.original.payment_date);
             return date.toLocaleDateString("en-US", {
+                timeZone: "UTC",
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
