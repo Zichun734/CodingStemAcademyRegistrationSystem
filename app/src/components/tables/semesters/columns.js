@@ -10,7 +10,7 @@ import {
 import {Button} from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { EditSemesterSheet } from "@/app/sheets/semesters-sheet";
+import { EditSemesterSheet } from "@/components/sheets/semesters-sheet";
 import { SheetTrigger } from "@/components/ui/sheet";
 
 export const columns = [

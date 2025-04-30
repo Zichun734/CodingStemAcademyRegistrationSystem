@@ -89,9 +89,15 @@ export function  DataTable({children, columns, data}) {
           </Table>
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
-          <Button size="sm" asChild>
-              <Link href="/admin/payments/create">Create Donation</Link>
-          </Button>
+          {children ? (
+            children
+          ) : (
+            <div className="flex items-center space-x-2">
+              <Button size="sm" asChild>
+                <Link href="/admin/payments/create">Create Donation</Link>
+              </Button>
+            </div>
+          )}
           <span className="text-sm">
             Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
           </span>

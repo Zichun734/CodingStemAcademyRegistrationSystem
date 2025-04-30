@@ -5,14 +5,14 @@ import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import config from "@/config";
 import {Card} from "@/components/ui/card";
-import {DataTable} from "@/app/tables/submissions/data-table";
-import {columns} from "@/app/tables/submissions/columns";
+import {DataTable} from "@/components/tables/submissions/data-table";
+import {columns} from "@/components/tables/submissions/columns";
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Form } from "@/components/ui/form";
-import { SubmissionForm } from '@/app/forms/submission/form';
+import { SubmissionForm } from '@/components/forms/submission/form';
 
 const ClassPage = () => {
   const router = useRouter();

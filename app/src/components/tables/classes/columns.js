@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
 import { deleteClass } from "@/components/api"
-import { ClassModifySheet } from "@/app/sheets/classes-sheet"
+import { ClassModifySheet } from "@/components/sheets/classes-sheet"
 import { SheetTrigger } from "@/components/ui/sheet"
 
 

@@ -134,6 +134,21 @@ export const getSemesters = async () => {
     }
 }
 
+export const getPaymentsForStudent = async (student_id) => {
+    try {
+        const res = await axios.get(`${config.backendUrl}/payments/student`, {
+            params: {
+                student_id: student_id
+            }
+        });
+        console.log(res.data);
+        return res.data['payments'];
+    }
+    catch (error) {
+        console.error("Error fetching payments for student:", error);
+    }
+}
+
 export const getAllClassesForStudent = async (id) => {
     try {
         const res = await axios.get(`${config.backendUrl}/all-classes-by-student`, {
@@ -186,6 +201,17 @@ export const postSemester = async (semester) => {
     }
 }
 
+export const postTeacherInvite = async (email) => {
+    try {
+        console.log("Creating teacher invite...", email);
+        const response = await axios.post(`${config.backendUrl}/teacher-invite`, {email: email});
+        console.log(response.data);
+        return response.data;
+    }
+    catch (error) {
+        console.error("Error creating teacher invite:", error);
+    }
+}
 
 export const updateSemester = async (semester) => {
     try {

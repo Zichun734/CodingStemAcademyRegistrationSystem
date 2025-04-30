@@ -48,7 +48,11 @@ export function CreatePaymentForm({ children, student_id = null }) {
         try {
             const response = await axios.post(`${config.backendUrl}/payment`, data)
             console.log(response.data)
-            router.push("/admin/payments");
+            if (!student_id) {
+                router.push("/admin/payments");
+            } else {
+                router.push(`/admin/payments/${data.student_id}`);
+            }
         } catch (error) {
             console.error(error)
         }
@@ -95,22 +99,24 @@ export function CreatePaymentForm({ children, student_id = null }) {
                     control={form.control}
                     name="status"
                     render={({ field }) => (
-                        <FormItem className="flex flex-row justify-between">
-                            <FormLabel>Status</FormLabel>
-                            <FormControl>
-                                <Select value={field.value} onValueChange={field.onChange}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectItem value="Complete">Complete</SelectItem>
-                                            <SelectItem value="Refund">Refund</SelectItem>
-                                            <SelectItem value="Balance">Balance</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
+                        <FormItem>
+                            <div className="flex flex-row justify-between">
+                                <FormLabel>Status</FormLabel>
+                                <FormControl>
+                                    <Select value={field.value} onValueChange={field.onChange}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="Complete">Complete</SelectItem>
+                                                <SelectItem value="Refund">Refund</SelectItem>
+                                                <SelectItem value="Balance">Balance</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                            </div>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -133,10 +139,12 @@ export function CreatePaymentForm({ children, student_id = null }) {
                     name="payment_date"
                     render={({ field }) => (
                         <FormItem>
+                            <div className="flex flex-row justify-between">
                             <FormLabel>Donation Date</FormLabel>
                             <FormControl>
-                                <Input type="date" {...field} />
+                                <Input type="date" className="w-1/3" {...field} />
                             </FormControl>
+                            </div>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -145,22 +153,24 @@ export function CreatePaymentForm({ children, student_id = null }) {
                     control={form.control}
                     name="payment_type"
                     render={({ field }) => (
-                        <FormItem className="flex flex-row justify-between">
-                            <FormLabel>Donation Type</FormLabel>
-                            <FormControl>
-                                <Select value={field.value} onValueChange={field.onChange}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select donation type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectItem value="cash">Cash</SelectItem>
-                                            <SelectItem value="check">Check</SelectItem>
-                                            <SelectItem value="zelle">Zelle</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
+                        <FormItem>
+                            <div className="flex flex-row justify-between">
+                                <FormLabel>Donation Type</FormLabel>
+                                <FormControl>
+                                    <Select value={field.value} onValueChange={field.onChange}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select donation type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="cash">Cash</SelectItem>
+                                                <SelectItem value="check">Check</SelectItem>
+                                                <SelectItem value="zelle">Zelle</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                            </div>
                             <FormMessage />
                         </FormItem>
                     )}

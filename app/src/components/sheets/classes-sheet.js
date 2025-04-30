@@ -13,7 +13,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { ClassForm } from "@/app/forms/class/edit-form"
+import { ClassForm } from "@/components/forms/class/edit-form"
 
 
 

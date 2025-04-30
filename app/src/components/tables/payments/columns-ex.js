@@ -10,41 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import { PaymentModifySheet } from "@/app/sheets/payment-sheet"
+import { PaymentModifySheet } from "@/components/sheets/payment-sheet"
 import { SheetTrigger } from "@/components/ui/sheet"
 import { deletePayment } from "@/components/api"
 
 
 export const columns = [
-    {
-        accessorKey: "last_name",
-        header: ({ column }) => {
-            return (
-                <Button className="w-[80px]" variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    <span>Last Name</span>
-                </Button>
-            )
-        },
-        cell: ({ row }) => {
-            console.log("Row data:", row.original);
-            console.log("Row data last name:", row.original.last_name);
-            return row.original.last_name || "N/A";
-        }
-    },
-    {
-        accessorKey: "first_name",
-        header: ({ column }) => {
-            return (
-                <Button className="w-[80px]" variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    <span>First Name</span>
-                </Button>
-            )
-        },
-        cell: ({ row }) => {
-            console.log("Row data:", row.original);
-            return row.original.first_name || "N/A";
-        }
-    },
     {
         accessorKey: "amount",
         header: ({ column }) => {

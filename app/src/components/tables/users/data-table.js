@@ -23,7 +23,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
  
 
-export function  DataTable({columns, data}) {
+export function  DataTable({children, columns, data}) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [activeRole, setActiveRole] = useState(null);
@@ -173,6 +173,7 @@ export function  DataTable({columns, data}) {
           </Table>
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
+          {children}
           <span className="text-sm">
             Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
           </span>

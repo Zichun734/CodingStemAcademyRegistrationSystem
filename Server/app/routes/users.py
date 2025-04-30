@@ -1,7 +1,9 @@
+import datetime
 from db_connection import get_db_connection
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask import request, jsonify, Blueprint
 import bcrypt
+import uuid
 
 users_bp = Blueprint('users', __name__)
 
@@ -268,6 +270,25 @@ def update_user():
         cursor.close()
         my_db.close()
     return jsonify({"message": "User updated"})
+
+@users_bp.route('/teacher-invite', methods=['POST'])
+def create_teacher_invite():
+    invite_id = str(uuid.uuid4())
+    email = request.json.get('email')
+    expires_at = datetime.datetime.now() + datetime.timedelta(days=5)
+    expires_at_str = expires_at.strftime('%Y-%m-%d %H:%M:%S')
+    db = get_db_connection()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "INSERT INTO teacher_invites (id, email, expires_at) VALUES (%s, %s, %s)"
+        vals = (invite_id, email, expires_at_str)
+        cursor.execute(sql, vals)
+        db.commit()
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({"message": "Teacher invite created", "invite_id": invite_id, "expires_at": expires_at_str})
+
 
 # DELETE functions
 @users_bp.route('/users', methods=['DELETE'])

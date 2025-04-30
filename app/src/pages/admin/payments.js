@@ -4,8 +4,8 @@ import {jwtDecode} from "jwt-decode";
 import {useRouter} from "next/router";
 import axios from "axios";
 import config from "@/config";
-import {DataTable} from "@/app/tables/payments/data-table";
-import {columns} from "@/app/tables/payments/columns";
+import {DataTable} from "@/components/tables/payments/data-table";
+import {columns} from "@/components/tables/payments/columns";
 import {Label} from "@/components/ui/label";
 
 export default function Donations() {
