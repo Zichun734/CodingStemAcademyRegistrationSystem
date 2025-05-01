@@ -1,13 +1,9 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
 import axios from 'axios';
 import config from '../config';
 import { useRouter } from 'next/router';
-import { cn } from "@/lib/utils"
-import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Card } from "@/components/ui/card"
@@ -140,7 +136,7 @@ export default function Register() {
     values.birth_date = format(new Date(`${values.birth_date.year}-${values.birth_date.month}-${values.birth_date.day}`), 'yyyy-MM-dd');
     delete values.confirm_password;
   
-    axios.post(`${config.backendUrl}/register`, data).then(response => {
+    axios.post(`${config.backendUrl}/register`, values).then(response => {
       console.log("Successfully registered: " + response.data['message']);
       if (response.data['access_token']) {
         localStorage.setItem('token', response.data['access_token']);

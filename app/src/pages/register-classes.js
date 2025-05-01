@@ -3,10 +3,15 @@ import axios from 'axios';
 import config from '../config';
 import {jwtDecode} from "jwt-decode";
 import {useRouter} from "next/router";
+import {getCurrentSemester} from "@/components/api";
+import {DataTable} from "@/components/tables/classes/registration/data-table";
+import {columns} from "@/components/tables/classes/registration/columns";
 
 export default function RegisterClasses() {
   const [classes, setClasses] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
+  const [user, setUser] = useState(null);
+  const [semester, setSemester] = useState(null);
 
   const router = useRouter();
 
@@ -21,13 +26,44 @@ export default function RegisterClasses() {
       alert("You are not authorized to access this page");
       return;
     }
+    setUser(user['sub']);
+  }, []);
 
-    axios.get(`${config.backendUrl}/classes`).then(response => {
-      setClasses(response.data['classes']);
+  useEffect(() => {
+    getCurrentSemester().then(semester => {
+      setSemester(semester);
     }).catch(error => {
       console.log(error);
     });
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    if (!semester) return;
+
+    axios.get(`${config.backendUrl}/classes/semester`, {params: {semester_id: semester.id}})
+      .then(response => {
+        const classes = response.data['classes'];
+        console.log("Classes: ", classes);
+        Promise.all(
+          classes.map(async (classData) => {
+            try {
+              const teacher = await axios.get(`${config.backendUrl}/user`, {params: {id: classData.teacher_id}});
+              return { ...classData, teacher: teacher.data }; 
+            } catch (error) {
+              console.error("Error fetching teacher:", error);
+              return classData; 
+            }
+          })
+        ).then((updatedClasses) => {
+          setClasses(updatedClasses);
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching classes:", error);
+      });
+  }, [semester]);
+
+
 
   const handleClick = () => {
     const token = localStorage.getItem('token');
@@ -64,22 +100,9 @@ export default function RegisterClasses() {
   };
 
   return (
-    <div>
+    <div className="container mx-auto p-8">
       <h1>Available Classes</h1>
-      <ul>
-        {classes.map((classItem) => (
-          <li key={classItem.id}>
-            <label>
-              <input
-                type="checkbox"
-                checked={selectedClasses.includes(classItem.id)}
-                onChange={() => handleCheckboxChange(classItem.id)}
-              />
-              {classItem.class_name}
-            </label>
-          </li>
-        ))}
-      </ul>
+      <DataTable data={classes} columns={columns} />
       <br />
       <button onClick={() => handleClick()}>Register Classes</button>
     </div>
