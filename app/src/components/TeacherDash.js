@@ -9,11 +9,12 @@ import { Skeleton } from './ui/skeleton';
 import ClassCard from './dashboard/class-cards';
 import axios from 'axios';
 import config from '@/config';
-import { getCurrentSemester } from './api';
+import { getClassesCountForTeacher, getCurrentSemester } from './api';
 
 const TeacherDash = () => {
   const [user, setUser] = useState(null);
   const [classes, setClasses] = useState([]);
+  const [classCount, setClassCount] = useState(0);
   const [semester, setSemester] = useState(null);
   const router = useRouter();
 
@@ -66,6 +67,10 @@ const TeacherDash = () => {
           setClasses(classes);
         });
       });
+      getClassesCountForTeacher(user['id']).then((res) => {
+        console.log("Class Count: ", res);
+        setClassCount(res);
+      })
     }
   }, [semester, user]);
 
@@ -100,18 +105,20 @@ const TeacherDash = () => {
           {classes.map((classData) => (
               <ClassCard classData={classData}  />
           ))}
-          <div>
-            <Link href="/classes" className="w-full h-2/3 flex items-center justify-center rounded-xl">
-              <p className="text-center text-gray-500">View All Classes...</p>
-            </Link>
-          </div>
-          <Card className="col-span-1 md:col-span-2">
+          {classCount !== 0 && (
+            <div className="w-full h-full">
+              <Link href="/classes" className="w-full h-2/3 flex items-center justify-center rounded-xl">
+                <p className="text-center text-gray-500">View All Classes...</p>
+              </Link>
+            </div>
+          )}
+          <Card className="col-span-1 md:col-span-2 lg:col-span-2">
             <CardHeader>
               <CardTitle>Quick Links</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="grid grid-cols-1 md:grid-cols-2 space-y-2">
-                <Link href="/courses">View Courses</Link>
+                <Link href="/classes">View Courses</Link>
                 <Link href="/assignments">View Assignments</Link>
                 <Link href="/calendar">View Calendar</Link>
                 <Link href="/grades">View Grades</Link>

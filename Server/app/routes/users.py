@@ -194,38 +194,49 @@ def add_user():
     grade_level = data.get('grade_level', None)
 
     my_db = get_db_connection()
-    cursor = my_db.cursor()
-    sql = "INSERT INTO users " \
-    "(first_name, last_name, birth_date, gender, email, phone, address, guardian, guardian_phone, health_ins, " \
-    "health_ins_num, role, grade_level) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    vals = (first_name, last_name, birth_date, gender, email, phone, address, guardian, guardian_phone,
-             health_ins, health_ins_num, role, grade_level)
-    cursor.execute(sql, vals)
-    my_db.commit()
-    user_id = cursor.lastrowid
-    add_auth(user_id, data.get('password'))
-    cursor.close()
+    try:
+        print(data)
+        cursor = my_db.cursor()
+        sql = "INSERT INTO users " \
+        "(first_name, last_name, birth_date, gender, email, phone, address, guardian, guardian_phone, health_ins, " \
+        "health_ins_num, role, grade_level) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        vals = (first_name, last_name, birth_date, gender, email, phone, address, guardian, guardian_phone,
+                health_ins, health_ins_num, role, grade_level)
+        cursor.execute(sql, vals)
+        my_db.commit()
+        user_id = cursor.lastrowid
+        add_auth(user_id, data.get('password'))
+        cursor.close()
 
-    user_info = {
-        "id": user_id,
-        'email': email,
-        'role': role,
-        'first_name': first_name,
-        'last_name': last_name,
-    }
+        user_info = {
+            "id": user_id,
+            'email': email,
+            'role': role,
+            'first_name': first_name,
+            'last_name': last_name,
+        }
+    finally:
+        my_db.close()
+        cursor.close()
 
     access_token = create_access_token(identity=user_info)
     return jsonify({"message": "Login successful", "access_token": access_token})
 
 def add_auth(user_id, password):
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    my_db = get_db_connection()
+    try:
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-    cursor = my_db.cursor()
-    sql = "INSERT INTO auths (user_id, password) VALUES (%s, %s)"
-    vals = (user_id, hashed_password)
-    cursor.execute(sql, vals)
-    my_db.commit()
+        cursor = my_db.cursor()
+        sql = "INSERT INTO auths (user_id, password) VALUES (%s, %s)"
+        vals = (user_id, hashed_password)
+        cursor.execute(sql, vals)
+        my_db.commit()
+    finally:
+        my_db.close()
+        cursor.close()
     return jsonify({"message": "Auth added"})
+
 
 # POST functions
 @users_bp.route('/users/update', methods=['PUT'])
@@ -288,6 +299,32 @@ def create_teacher_invite():
         db.close()
         cursor.close()
     return jsonify({"message": "Teacher invite created", "invite_id": invite_id, "expires_at": expires_at_str})
+
+@users_bp.route('/verify-teacher-invite', methods=['POST'])
+def verify_teacher_invite():
+    invite_id = request.json.get('invite_id')
+    db = get_db_connection()
+    try:
+        cursor = db.cursor(dictionary=True)
+        sql = "SELECT * FROM teacher_invites WHERE id = %s"
+        vals = (invite_id, )
+        cursor.execute(sql, vals)
+        invite = cursor.fetchone()
+        if invite is None:
+            return jsonify({"message": "Invalid invite", "status": False})
+        expires_at = datetime.datetime.strptime(str(invite['expires_at']), '%Y-%m-%d %H:%M:%S')
+        if expires_at < datetime.datetime.now():
+            return jsonify({"message": "Invite expired", "status": False})
+        if invite['used']:
+            sql = "DELETE FROM teacher_invites WHERE id = %s"
+            vals = (invite_id, )
+            cursor.execute(sql, vals)
+            db.commit()
+            return jsonify({"message": "Invite already used", "status": False})
+    finally:
+        db.close()
+        cursor.close()
+    return jsonify({"message": "Invite verified", "status": True, "email": invite['email']})
 
 
 # DELETE functions

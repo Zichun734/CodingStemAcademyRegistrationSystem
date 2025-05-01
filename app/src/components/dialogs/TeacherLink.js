@@ -15,7 +15,7 @@ export const TeacherLink = ({ children, teacherData }) => {
         setLoading(true);
         postTeacherInvite(email).then((response) => {
             console.log(response);
-            setLink("localhost:3000/teacher-signup?token=" + response['invite_id']);
+            setLink("localhost:3000/register-teacher?token=" + response['invite_id']);
             setLoading(false);
         }).catch((error) => {
             console.error("Error creating teacher invite:", error);
