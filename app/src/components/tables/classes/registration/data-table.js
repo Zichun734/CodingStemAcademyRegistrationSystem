@@ -19,11 +19,17 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
+import { jwtDecode } from "jwt-decode"
+import axios from "axios"
+import config from "@/config"
+import { useRouter } from "next/router"
 
 
 
 export function DataTable({ columns, data }) {
     const [sorting, setSorting] = useState([])
+    const [rowSelection, setRowSelection] = useState({})
+    const router = useRouter()
 
     const table = useReactTable({
         data,
@@ -32,10 +38,46 @@ export function DataTable({ columns, data }) {
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
+        onRowSelectionChange: setRowSelection,
         state: {
             sorting,
+            rowSelection,
         },
     });
+
+    const handleClick = () => {
+        const token = localStorage.getItem('token');
+        const user = jwtDecode(token);
+        const student_id = user['sub']['id'];
+        const selectedClasses = Object.keys(rowSelection).map((key) => {
+            const row = table.getRowModel().rows.find((row) => row.id === key);
+            if (row) {
+                return row.original.id;
+            }
+            return null;
+        }
+        ).filter((id) => id !== null);
+        if (selectedClasses.length === 0) {
+            alert("Please select at least one class to register");
+            return;
+        }
+    
+        console.log("Registering for classes: " + selectedClasses + " for student: " + student_id)
+        axios.post(`${config.backendUrl}/add_multiple_classes_to_student`, {
+            user_id: student_id,
+            classes: selectedClasses,
+        }).then(response => {
+            console.log("Successfully registered for class: " + response.data['message']);
+            if (response.data['message'] === 'Student already registered for this class') {
+            alert("You are already registered for this class");
+            } else {
+            console.log("Successfully registered for class: " + response.data['message']);
+            router.push('/dashboard').then(() => console.log("Redirecting to dashboard"));
+            }
+        }).catch(error => {
+            console.log(error);
+        });
+        }
 
     return (
         <div className="py-4">
@@ -86,27 +128,30 @@ export function DataTable({ columns, data }) {
                 </Table>
             </div>
             <div className="flex items-center justify-between py-4">
+                <Button onClick={() => handleClick()}>Register Classes</Button>
+                <div className="flex items-center justify-end gap-4">
 
-                <span className="text-sm">
-                    Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                </span>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    Previous
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    Next
-                </Button>
-            </div>
+                    <span className="text-sm">
+                        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                    </span>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        Previous
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        Next
+                    </Button>
+                </div>
+                </div>
         </div>
     );
 }

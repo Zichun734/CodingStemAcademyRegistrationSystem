@@ -6,11 +6,13 @@ import { getCurrentSemester } from "@/components/api";
 import axios from 'axios';
 import config from '@/config';
 import ClassCard from './dashboard/class-cards';
+import { Button } from "@/components/ui/button";
 
 const StudentDash = () => {
   const [user, setUser] = useState({});
   const [semester, setSemester] = useState(null);
   const [classes, setClasses] = useState([]);
+  const [totalClasses, setTotalClasses] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -58,6 +60,12 @@ const StudentDash = () => {
           setClasses(data);
         });
       });
+      axios.get(`${config.backendUrl}/classes-student/count`, {params: {student_id: user['id']}})
+      .then((res) => {
+        setTotalClasses(res.data['count']);
+      }).catch((error) => {
+        console.error('Error fetching total classes:', error);
+      })
     }
   }, [semester, user]);
 
@@ -89,15 +97,24 @@ const StudentDash = () => {
       <h1 className="text-4xl font-bold mb-4">Student Dashboard</h1>
       <div className="flex flex-1 flex-col gap-4 p-4">
         <p>Welcome, {user['first_name']} {user['last_name']}</p>
-        <div className="grid auto-rows-min grid-cols-1 md:grid-cols-3 gap-4">
-        {classes.map((classData) => (
-          <ClassCard classData={classData}  />
-        ))}
-        <div>
-            <Link href="/classes" className="w-full h-2/3 flex items-center justify-center rounded-xl">
-              <p className="text-center text-gray-500">View All Classes...</p>
-            </Link>
-          </div>
+        <div className="grid auto-rows-min grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {classes.map((classData) => (
+            <ClassCard classData={classData}  />
+          ))}
+          {totalClasses > 0 ? (
+            <div className="col-span-1 flex-1 flex flex-col">
+                <Link href="/classes" className="w-full h-2/3 flex items-center justify-center rounded-xl">
+                  <p className="text-center text-gray-500">View All Classes...</p>
+                </Link>
+            </div>
+          ) : (
+            <div className="col-span-2 flex-1 flex flex-col space-y-4 p-16">
+              <p className="text-center text-gray-500">No Classes Enrolled</p>
+              <Link href="/register-classes" className="w-full h-2/3 flex items-center justify-center rounded-xl">
+                <Button variant="default" className="text-center">Enroll in a Class</Button>
+              </Link>
+            </div>
+          )}
         <Card className="col-span-1 md:col-span-2">
           <CardHeader>
             <CardTitle>Quick Links</CardTitle>
