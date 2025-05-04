@@ -204,7 +204,7 @@ export default function Calendar() {
   if (loading) {
     return (
       <Layout title={"Calendar"}>
-        <div className="container flex flex-1 flex-col gap-4 p-8">
+        <div className="w-[1100px] container flex flex-1 flex-col gap-4 p-8">
           <Card className="w-full h-full">
             <div className="flex items-center justify-center h-full">
               <p>Loading...</p>
@@ -218,7 +218,7 @@ export default function Calendar() {
   if (!user) {
     return (
       <Layout title={"Calendar"}>
-        <div className="container flex flex-1 flex-col gap-4 p-8">
+        <div className="w-[1100px]  container flex flex-1 flex-col gap-4 p-8">
           <Card className="w-full h-full">
             <div className="flex items-center justify-center h-full">
               <p>Please log in to view your calendar.</p>
@@ -233,7 +233,7 @@ export default function Calendar() {
 
   return (
     <Layout title={"Calendar"}>
-      <div className="container flex flex-1 flex-col gap-4 p-8">
+      <div className="w-[1100px] container flex flex-1 flex-col gap-4 p-8">
         <SchedulerProvider initialState={events} weekStartsOn="monday">
           <SchedulerWrapper
             stopDayEventSummary={true}
@@ -244,7 +244,7 @@ export default function Calendar() {
             }}
           />
         </SchedulerProvider>
-      </div>
+        </div>
     </Layout>
   );
 }

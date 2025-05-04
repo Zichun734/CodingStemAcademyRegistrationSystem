@@ -13,10 +13,6 @@ import Link from "next/link"
 import { deleteStudentFromClass } from "@/components/api"
 
 export const columns = [
-    {
-        accessorKey: "role",
-        header: "Role",
-      },
       {
         accessorKey: "last_name",
         header: ({ column }) => {

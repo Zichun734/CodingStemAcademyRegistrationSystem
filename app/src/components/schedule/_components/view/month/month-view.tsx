@@ -173,14 +173,14 @@ export default function MonthView({
   ).getDate();
   return (
     <div>
-      <div className="flex flex-col mb-4">
+      <div className="flex flex-row justify-between mb-4">
         <motion.h2
           key={currentDate.getMonth()}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl my-5 tracking-tighter font-bold"
+          className="text-3xl tracking-tighter font-bold"
         >
           {currentDate.toLocaleString("default", { month: "long" })}{" "}
           {currentDate.getFullYear()}

@@ -23,7 +23,6 @@ import Link from "next/link"
 export function  DataTable({children, columns, data}) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
-  const [activeRole, setActiveRole] = useState(null);
 
   const table = useReactTable({
       data,
