@@ -23,12 +23,13 @@ def get_scores_by_student(assignment_id, student_id):
     try: 
         cursor = connection.cursor(dictionary=True)
         cursor.execute("SELECT * FROM scores WHERE student_id = %s AND assignment_id = %s", (student_id, assignment_id))
-        scores = cursor.fetchall()
+        score = cursor.fetchone()
     finally:
         cursor.close()
         connection.close()
-    return jsonify({'message': 'Scores retrieved successfully', 'scores': scores}), 200
-    
+    return jsonify({'message': 'Scores retrieved successfully', 'score': score}), 200
+
+
 @scores_bp.route('/score', methods=['GET'])
 def get_score_by_submission():
     submission_id = request.args.get('submission_id')
@@ -77,6 +78,7 @@ def get_scores_by_assignment():
     else:
         return jsonify({'message': 'No scores found for this assignment'}), 404
 
+# POST functions
 
 @scores_bp.route('/score', methods=['POST'])
 def create_score():

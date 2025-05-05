@@ -1,9 +1,12 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
 import axios from 'axios';
 import config from '../config';
 import { useRouter } from 'next/router';
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Card } from "@/components/ui/card"
@@ -95,12 +98,36 @@ const formSchema = z.object({
   grade_level: z.enum(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]),
 })
 
+export function DatePicker({field}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant={"outline"}
+          className={cn(
+            "justify-start text-left font-normal",
+            !field.value && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon />
+          {field.value ? format(field.value, "PPP") : <span>Date of Birth</span>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0">
+        <Calendar
+          mode="single"
+          selected={field.value}
+          onSelect={field.onChange}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 export default function Register() {
   const router = useRouter();
   const gradeLevels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
-  const dayRef = React.useRef(null);
-  const monthRef = React.useRef(null);
-  const yearRef = React.useRef(null);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -133,10 +160,8 @@ export default function Register() {
       alert("Passwords do not match");
       return;
     }
-    values.birth_date = format(new Date(`${values.birth_date.year}-${values.birth_date.month}-${values.birth_date.day}`), 'yyyy-MM-dd');
-    delete values.confirm_password;
   
-    axios.post(`${config.backendUrl}/register`, values).then(response => {
+    axios.post(`${config.backendUrl}/register`, data).then(response => {
       console.log("Successfully registered: " + response.data['message']);
       if (response.data['access_token']) {
         localStorage.setItem('token', response.data['access_token']);
@@ -196,15 +221,11 @@ export default function Register() {
                   type="text"
                   placeholder="MM"
                   maxLength={2}
-                  ref={monthRef}
                   className="w-12 text-center"
                   value={field.value?.month || ""}
                   onChange={(e) => {
                     const month = e.target.value;
                     field.onChange({ ...field.value, month });
-                    if (month.length === 2) {
-                      dayRef.current.focus();
-                    }
                   }}
                 />
                 {/* Day Input */}
@@ -212,15 +233,11 @@ export default function Register() {
                   type="text"
                   placeholder="DD"
                   maxLength={2}
-                  ref={dayRef}
                   className="w-12 text-center"
                   value={field.value?.day || ""}
                   onChange={(e) => {
                     const day = e.target.value;
                     field.onChange({ ...field.value, day });
-                    if (day.length === 2) {
-                      yearRef.current.focus();
-                    }
                   }}
                 />
                 {/* Year Input */}
@@ -228,7 +245,6 @@ export default function Register() {
                   type="text"
                   placeholder="YYYY"
                   maxLength={4}
-                  ref={yearRef}
                   className="w-16 text-center"
                   value={field.value?.year || ""}
                   onChange={(e) => {
