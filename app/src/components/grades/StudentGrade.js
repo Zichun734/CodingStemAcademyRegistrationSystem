@@ -5,7 +5,16 @@ import axios from 'axios';
 import config from '@/config';
 import { Skeleton } from '../ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
+  
 
 export default function StudentGrade() {
     const [user, setUser] = useState(null);
@@ -74,7 +83,29 @@ export default function StudentGrade() {
         <div className="container mx-auto flex flex-col p-4 gap-4">
             <h1 className="text-2xl font-bold">{className} Grades</h1>
             <Card>
-
+                <Table>
+                    <TableCaption>
+                        Your grades for {className}
+                    </TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="text-left w-[150px]">Assignment</TableHead>
+                            <TableHead className="text-left w-[100px]">Due</TableHead>
+                            <TableHead className="text-left w-[60px]">Score</TableHead>
+                            <TableHead className="text-left w-[60px]">Total</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {assignments.map((assignment) => (
+                            <TableRow key={assignment.id}>
+                                <TableCell className="text-left">{assignment.title}</TableCell>
+                                <TableCell className="text-left">{assignment.due_date}</TableCell>
+                                <TableCell className="text-left">{assignment.score ? 0 : assignment.score && assignment.score.grade ? assignment.score.grade : 0}</TableCell>
+                                <TableCell className="text-left">{assignment.total_points}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </Card>
         </div>
     );

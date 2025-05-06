@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCurrentSemester } from "@/components/api";
 import axios from 'axios';
 import config from '@/config';
-import ClassCard from './dashboard/class-cards';
+import ClassCard from './class-cards';
 import { Button } from "@/components/ui/button";
 
 const StudentDash = () => {

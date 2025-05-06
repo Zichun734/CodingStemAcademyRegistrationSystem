@@ -5,11 +5,11 @@ import { useRouter } from 'next/router';
 import {Button} from "@/components/ui/button";
 import {Layout} from "@/app/layout";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import { Skeleton } from './ui/skeleton';
-import ClassCard from './dashboard/class-cards';
+import { Skeleton } from '@/components/ui/skeleton';
+import ClassCard from './class-cards';
 import axios from 'axios';
 import config from '@/config';
-import { getClassesCountForTeacher, getCurrentSemester } from './api';
+import { getClassesCountForTeacher, getCurrentSemester } from '@/components/api';
 
 const TeacherDash = () => {
   const [user, setUser] = useState(null);
